@@ -3,70 +3,76 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Journal & Daily Tasks</title>
+  <title>2026 Journal</title>
 
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Supabase Official CDN -->
+  <!-- Supabase (UMD, global `supabase`) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
 </head>
 
 <body>
-
-  <!-- Cover / Login Gate -->
-  <div id="login-screen" class="cover-screen">
-    <div class="cover-box">
-      <h1>My 2026 Journal & Daily Tasks</h1>
-      <p>Capture your 2026, one day at a time.</p>
-      <button id="login-btn">Enter 2026 Journal</button>
+  <!-- ========= COVER / LOGIN SCREEN ========= -->
+  <div id="coverScreen">
+    <div class="cover-center">
+      <h1 class="cover-title">My 2026 Journal & Daily Tasks</h1>
+      <p class="cover-subtitle">Capture your 2026, one day at a time.</p>
+      <!-- Text of this button is changed in JS depending on login state -->
+      <button id="enterBtn" class="cover-btn">Loading…</button>
     </div>
   </div>
 
-  <!-- Main App -->
-  <div id="app" style="display:none;">
+  <!-- BACKGROUND + OVERLAY (your CSS should style these) -->
+  <div id="background"></div>
+  <div class="overlay"></div>
 
-    <header>
-      <h1 id="top-title">2026 Journal</h1>
-      <h2 id="top-date"></h2>
-    </header>
+  <!-- HEADER -->
+  <header>
+    <h1>2026 Journal</h1>
+    <p id="currentDate"></p>
+  </header>
 
-    <div class="container">
-
-      <!-- Calendar -->
-      <div class="calendar-box">
-        <div class="cal-header">
-          <button id="prev-month">&lt;</button>
-          <h3 id="month-title"></h3>
-          <button id="next-month">&gt;</button>
-        </div>
-        <div id="calendar-grid"></div>
+  <!-- MAIN CONTENT -->
+  <main>
+    <!-- Calendar card -->
+    <section class="calendar-card glass card-animate" id="calendarCard">
+      <div class="calendar-header">
+        <button id="prevMonth" class="nav-btn">&#8249;</button>
+        <h2 id="monthYear">Select a Month</h2>
+        <button id="nextMonth" class="nav-btn">&#8250;</button>
       </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+    </section>
 
-      <!-- Journal -->
-      <div class="journal-box">
-        <h3 id="journal-title"></h3>
-        <textarea id="journal-text" placeholder="Write your thoughts…"></textarea>
-
-        <button id="save-journal">Save</button>
-        <button id="clear-journal">Clear</button>
+    <!-- Journal card -->
+    <section class="journal-card glass card-animate" id="journalCard">
+      <h2 id="journalTitle">Journal</h2>
+      <textarea
+        id="journalEntry"
+        placeholder="Write your thoughts, experiences, and reflections for today..."
+      ></textarea>
+      <div class="btn-row">
+        <button id="saveJournal" class="pill-btn primary">Save</button>
+        <button id="clearJournal" class="pill-btn">Clear</button>
       </div>
+    </section>
 
-    </div>
-
-    <!-- Tasks -->
-    <div class="tasks-box">
-      <h3 id="tasks-title"></h3>
-
-      <div class="task-input-row">
-        <input id="new-task-input" type="text" placeholder="Add a new task…" />
-        <button id="add-task">Add</button>
+    <!-- Tasks card -->
+    <section class="tasks-card glass card-animate" id="tasksCard">
+      <h2 id="tasksTitle">Tasks</h2>
+      <div class="task-input">
+        <input
+          type="text"
+          id="taskInput"
+          placeholder="Add a new task..."
+        />
+        <button id="addTask" class="pill-btn primary">Add</button>
       </div>
+      <ul id="taskList"></ul>
+    </section>
+  </main>
 
-      <ul id="task-list"></ul>
-    </div>
-
-  </div>
-
+  <!-- APP LOGIC -->
   <script src="script.js"></script>
 </body>
 </html>
