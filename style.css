@@ -20,20 +20,13 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-size: cover;
-    background-position: center;
+    
+    background-size: contain;      /* Ensures full image is visible */
+    background-repeat: no-repeat;  /* No repeating tiles */
+    background-position: center;   /* Centers face/body */
+    
+    background-color: #000;        /* Fills empty space on sides */
     z-index: -3;
-}
-
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.45);
-    backdrop-filter: blur(5px);
-    z-index: -2;
 }
 
 /* ---------------- HEADER ---------------- */
