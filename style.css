@@ -266,3 +266,10 @@ main {
         grid-column: span 1;
     }
 }
+.task-checkbox {
+    width: 18px;
+    height: 18px;
+    margin-right: 12px;
+    accent-color: #ffffff; /* Makes checkbox visible */
+}
+
