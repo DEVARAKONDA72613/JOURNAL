@@ -5,10 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>2026 Journal</title>
   <link rel="stylesheet" href="style.css" />
+
+  <!-- NON-MODULE SUPABASE (WORKS ON GITHUB PAGES) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script defer src="script.js"></script>
 </head>
 
 <body>
-  <!-- ========== COVER PAGE ========== -->
+
+  <!-- COVER PAGE -->
   <div id="coverScreen">
     <div class="cover-center">
       <h1 class="cover-title">My 2026 Journal & Daily Tasks</h1>
@@ -21,33 +27,31 @@
   <div id="background"></div>
   <div class="overlay"></div>
 
-  <!-- HEADER -->
   <header>
     <h1>2026 Journal</h1>
     <p id="currentDate"></p>
   </header>
 
-  <!-- MAIN -->
   <main>
-    <section class="calendar-card glass card-animate" id="calendarCard">
+    <section class="calendar-card glass">
       <div class="calendar-header">
-        <button id="prevMonth" class="nav-btn">&#8249;</button>
+        <button id="prevMonth">&#8249;</button>
         <h2 id="monthYear">Select a Month</h2>
-        <button id="nextMonth" class="nav-btn">&#8250;</button>
+        <button id="nextMonth">&#8250;</button>
       </div>
-      <div class="calendar-grid" id="calendarGrid"></div>
+      <div id="calendarGrid" class="calendar-grid"></div>
     </section>
 
-    <section class="journal-card glass card-animate" id="journalCard">
+    <section class="journal-card glass">
       <h2 id="journalTitle">Journal</h2>
-      <textarea id="journalEntry" placeholder="Write something..."></textarea>
+      <textarea id="journalEntry" placeholder="Write your journal..."></textarea>
       <div class="btn-row">
         <button id="saveJournal" class="pill-btn primary">Save</button>
         <button id="clearJournal" class="pill-btn">Clear</button>
       </div>
     </section>
 
-    <section class="tasks-card glass card-animate" id="tasksCard">
+    <section class="tasks-card glass">
       <h2 id="tasksTitle">Tasks</h2>
       <div class="task-input">
         <input id="taskInput" placeholder="Add a new task..." />
@@ -57,7 +61,5 @@
     </section>
   </main>
 
-  <!-- MODULE SCRIPT -->
-  <script type="module" src="script.js"></script>
 </body>
 </html>
