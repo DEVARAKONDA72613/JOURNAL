@@ -1,29 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>2026 Journal</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 
-  <!-- NON-MODULE SUPABASE (WORKS ON GITHUB PAGES) -->
+  <!-- Supabase CDN (non-module, works everywhere) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script defer src="script.js"></script>
 </head>
-
 <body>
 
-  <!-- COVER PAGE -->
-  <div id="coverScreen">
-    <div class="cover-center">
+  <!-- COVER SCREEN -->
+  <div id="coverScreen" class="cover">
+    <div class="cover-box">
       <h1 class="cover-title">My 2026 Journal & Daily Tasks</h1>
-      <p class="cover-subtitle">Capture your 2026, one day at a time.</p>
+      <p class="cover-sub">Capture your 2026, one day at a time.</p>
       <button id="enterBtn" class="cover-btn">Enter 2026 Journal</button>
     </div>
   </div>
 
-  <!-- Background -->
+  <!-- BACKGROUND -->
   <div id="background"></div>
   <div class="overlay"></div>
 
@@ -33,15 +32,18 @@
   </header>
 
   <main>
+
+    <!-- CALENDAR -->
     <section class="calendar-card glass">
       <div class="calendar-header">
         <button id="prevMonth">&#8249;</button>
-        <h2 id="monthYear">Select a Month</h2>
+        <h2 id="monthYear">January 2026</h2>
         <button id="nextMonth">&#8250;</button>
       </div>
       <div id="calendarGrid" class="calendar-grid"></div>
     </section>
 
+    <!-- JOURNAL -->
     <section class="journal-card glass">
       <h2 id="journalTitle">Journal</h2>
       <textarea id="journalEntry" placeholder="Write your journal..."></textarea>
@@ -51,14 +53,16 @@
       </div>
     </section>
 
+    <!-- TASKS -->
     <section class="tasks-card glass">
       <h2 id="tasksTitle">Tasks</h2>
       <div class="task-input">
-        <input id="taskInput" placeholder="Add a new task..." />
+        <input id="taskInput" placeholder="Add a new task...">
         <button id="addTask" class="pill-btn primary">Add</button>
       </div>
       <ul id="taskList"></ul>
     </section>
+
   </main>
 
 </body>
