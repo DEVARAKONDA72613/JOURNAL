@@ -1,0 +1,189 @@
+.journal-entry-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.journal-entry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.journal-entry-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: white;
+  margin: 0;
+}
+
+.journal-entry-saved {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.journal-entry-textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 1.25rem;
+  color: white;
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 300px;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.journal-entry-textarea:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.journal-entry-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.journal-entry-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.journal-entry-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.journal-entry-btn--save {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.journal-entry-btn--save:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.journal-entry-btn--clear {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.journal-entry-btn--clear:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .journal-entry-card {
+    padding: 1.75rem;
+  }
+
+  .journal-entry-textarea {
+    min-height: 280px;
+  }
+}
+
+/* Small tablets and large phones */
+@media (max-width: 768px) {
+  .journal-entry-card {
+    padding: 1.5rem;
+  }
+
+  .journal-entry-title {
+    font-size: 1.3rem;
+  }
+
+  .journal-entry-textarea {
+    min-height: 260px;
+    padding: 1.1rem;
+  }
+}
+
+/* Phones */
+@media (max-width: 640px) {
+  .journal-entry-card {
+    padding: 1.25rem;
+  }
+
+  .journal-entry-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .journal-entry-title {
+    font-size: 1.15rem;
+  }
+
+  .journal-entry-textarea {
+    min-height: 250px;
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .journal-entry-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .journal-entry-btn {
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 480px) {
+  .journal-entry-card {
+    padding: 1rem;
+  }
+
+  .journal-entry-title {
+    font-size: 1.05rem;
+  }
+
+  .journal-entry-textarea {
+    min-height: 220px;
+    padding: 0.875rem;
+    font-size: 0.9rem;
+  }
+
+  .journal-entry-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+  }
+}
+

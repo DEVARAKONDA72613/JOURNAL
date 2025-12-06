@@ -1,0 +1,264 @@
+.tasks-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.tasks-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: white;
+  margin: 0 0 1.5rem 0;
+}
+
+.tasks-form {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.tasks-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.tasks-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.tasks-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.tasks-add-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.tasks-add-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tasks-empty {
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  padding: 2rem;
+  font-style: italic;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.task-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.task-item--completed {
+  opacity: 0.6;
+}
+
+.task-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: rgba(255, 255, 255, 0.8);
+  flex-shrink: 0;
+}
+
+.task-text {
+  flex: 1;
+  color: white;
+  font-size: 1rem;
+  line-height: 1.5;
+  cursor: text;
+  word-break: break-word;
+}
+
+.task-item--completed .task-text {
+  text-decoration: line-through;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.task-edit-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  padding: 0.5rem;
+  color: white;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.task-edit-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.task-delete-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.task-delete-btn:hover {
+  background: rgba(255, 77, 77, 0.3);
+  border-color: rgba(255, 77, 77, 0.5);
+  transform: scale(1.1);
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .tasks-card {
+    padding: 1.75rem;
+  }
+}
+
+/* Small tablets and large phones */
+@media (max-width: 768px) {
+  .tasks-card {
+    padding: 1.5rem;
+  }
+
+  .tasks-title {
+    font-size: 1.3rem;
+  }
+}
+
+/* Phones */
+@media (max-width: 640px) {
+  .tasks-card {
+    padding: 1.25rem;
+  }
+
+  .tasks-title {
+    font-size: 1.15rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .tasks-form {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .tasks-input {
+    padding: 0.875rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .tasks-add-btn {
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+  }
+
+  .task-item {
+    padding: 0.875rem;
+    gap: 0.75rem;
+  }
+
+  .task-text {
+    font-size: 0.95rem;
+  }
+
+  .task-delete-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 1.4rem;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 480px) {
+  .tasks-card {
+    padding: 1rem;
+  }
+
+  .tasks-title {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+  }
+
+  .tasks-form {
+    gap: 0.5rem;
+  }
+
+  .tasks-input {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.9rem;
+  }
+
+  .tasks-add-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .task-item {
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .task-text {
+    font-size: 0.9rem;
+  }
+
+  .task-checkbox {
+    width: 18px;
+    height: 18px;
+  }
+
+  .task-delete-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 1.3rem;
+  }
+}
+

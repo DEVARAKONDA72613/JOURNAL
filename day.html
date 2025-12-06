@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cinematic Journal – Daily Scene</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="theme-dark" data-page="day">
+  <div class="grain-overlay"></div>
+  <div class="vignette-overlay"></div>
+
+  <header class="site-header fade-slow">
+    <a href="month.html" class="site-header__back" id="day-back-link"
+       aria-label="Back to month">
+      ←
+    </a>
+    <div class="site-title" id="day-header-title">A Quiet Film Journal</div>
+    <button class="theme-toggle" aria-label="Toggle dark/light">
+      <span class="theme-toggle-knob"></span>
+    </button>
+  </header>
+
+  <main class="day">
+    <div class="day-bg" id="day-bg">
+      <!-- Background via JS -->
+      <img class="sr-only" id="day-bg-alt" alt="" />
+      <div class="day-bg__overlay"></div>
+    </div>
+
+    <section class="day-layout">
+      <div class="day-meta fade-slow-up">
+        <p class="day-meta__date" id="day-date">December 4, 2025</p>
+        <h1 class="day-meta__title" id="day-movie-title">Untitled Movie</h1>
+        <p class="day-meta__scene" id="day-scene-title">Scene 04 – Working Title</p>
+      </div>
+
+      <div class="day-content fade-slow-up">
+        <section class="day-card">
+          <label class="field">
+            <span class="field__label">Plan for today</span>
+            <textarea id="field-plan" class="field__input field__input--textarea"
+              placeholder="What is today’s intention, like a director’s note?"></textarea>
+          </label>
+
+          <label class="field">
+            <span class="field__label">What happened today</span>
+            <textarea id="field-events" class="field__input field__input--textarea"
+              placeholder="Describe the scene. Atmosphere, small details, dialogue."></textarea>
+          </label>
+
+          <div class="field field--inline">
+            <span class="field__label">Mood</span>
+            <select id="field-mood" class="field__input field__input--select">
+              <option value="">Choose a mood</option>
+              <option value="quiet">Quiet</option>
+              <option value="hopeful">Hopeful</option>
+              <option value="melancholic">Melancholic</option>
+              <option value="restless">Restless</option>
+              <option value="warm">Warm</option>
+              <option value="uncertain">Uncertain</option>
+            </select>
+          </div>
+
+          <label class="field">
+            <span class="field__label">Tags</span>
+            <input id="field-tags" class="field__input"
+              placeholder="e.g. writing, city lights, rain, solitude" />
+          </label>
+
+          <button id="save-entry-btn" class="button button--primary button--wide">
+            Save today’s scene
+          </button>
+
+          <p class="day-save-status" id="day-save-status" aria-live="polite"></p>
+        </section>
+
+        <aside class="day-media fade-slow-up">
+          <figure class="polaroid" id="day-still-figure">
+            <div class="polaroid__frame">
+              <img id="day-still" src="" alt="" class="polaroid__image" />
+            </div>
+            <figcaption class="polaroid__caption" id="day-still-caption">
+              Movie still for today’s scene.
+            </figcaption>
+          </figure>
+
+          <figure class="polaroid polaroid--secondary" id="day-photo-figure">
+            <div class="polaroid__frame">
+              <img id="day-photo" src="" alt="" class="polaroid__image" />
+            </div>
+            <figcaption class="polaroid__caption">
+              Your personal photo (optional).
+            </figcaption>
+          </figure>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer fade-slow">
+    <span class="site-footer__note">
+      This page is private. Only you see these scenes.
+    </span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

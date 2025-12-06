@@ -1,0 +1,191 @@
+.journal-view {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  /* Ensure image scales properly on all devices */
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  /* Use fixed attachment only on larger screens for better performance on mobile */
+  background-attachment: fixed;
+  /* Prevent image distortion */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  /* Fallback for older browsers */
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+}
+
+/* Disable fixed attachment on mobile/tablet for better performance */
+@media (max-width: 1024px) {
+  .journal-view {
+    background-attachment: scroll !important;
+    /* Ensure proper scaling on mobile */
+    background-size: cover !important;
+    background-position: center center !important;
+  }
+}
+
+/* Additional mobile optimizations */
+@media (max-width: 768px) {
+  .journal-view {
+    /* Ensure image covers full viewport on mobile */
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 1024px) and (orientation: landscape) {
+  .journal-view {
+    background-size: cover !important;
+    background-position: center center !important;
+  }
+}
+
+.journal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+}
+
+.journal-container {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.journal-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: white;
+}
+
+.journal-title {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.journal-date-display {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+.journal-layout {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.journal-sidebar {
+  position: sticky;
+  top: 2rem;
+}
+
+.journal-content {
+  min-height: 600px;
+}
+
+/* Ensure content doesn't overflow on small screens */
+@media (max-width: 640px) {
+  .journal-content {
+    min-height: auto;
+  }
+}
+
+.journal-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Tablet (iPad, etc.) - 768px to 1024px */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .journal-container {
+    padding: 1.5rem;
+    max-width: 100%;
+  }
+
+  .journal-layout {
+    grid-template-columns: 300px 1fr;
+    gap: 1.5rem;
+  }
+
+  .journal-sidebar {
+    position: sticky;
+    top: 1rem;
+  }
+}
+
+/* Small tablets and large phones - 640px to 768px */
+@media (max-width: 768px) {
+  .journal-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .journal-sidebar {
+    position: static;
+  }
+
+  .journal-container {
+    padding: 1rem;
+  }
+
+  .journal-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .journal-title {
+    font-size: clamp(1.25rem, 4vw, 2rem);
+  }
+}
+
+/* Phones - up to 640px */
+@media (max-width: 640px) {
+  .journal-container {
+    padding: 0.75rem;
+  }
+
+  .journal-layout {
+    gap: 1.25rem;
+  }
+
+  .journal-header {
+    margin-bottom: 1rem;
+  }
+
+  .journal-title {
+    font-size: clamp(1.1rem, 5vw, 1.75rem);
+    margin-bottom: 0.25rem;
+  }
+
+  .journal-date-display {
+    font-size: clamp(0.875rem, 3vw, 1.1rem);
+  }
+}
+
+/* Very small phones - up to 480px */
+@media (max-width: 480px) {
+  .journal-container {
+    padding: 0.5rem;
+  }
+
+  .journal-layout {
+    gap: 1rem;
+  }
+}
+

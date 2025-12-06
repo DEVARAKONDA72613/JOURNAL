@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cinematic Journal – Month Overview</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="theme-dark" data-page="month">
+  <div class="grain-overlay"></div>
+  <div class="vignette-overlay"></div>
+
+  <header class="site-header fade-slow">
+    <a href="index.html" class="site-header__back" aria-label="Back to intro">
+      ←
+    </a>
+    <div class="site-title">A Quiet Film Journal</div>
+    <button class="theme-toggle" aria-label="Toggle dark/light">
+      <span class="theme-toggle-knob"></span>
+    </button>
+  </header>
+
+  <main class="month">
+    <section class="month-banner fade-slow" id="month-banner">
+      <div class="month-banner__bg" id="month-banner-bg">
+        <!-- Background via JS -->
+        <img class="sr-only" id="month-banner-bg-alt" alt="" />
+      </div>
+      <div class="month-banner__overlay"></div>
+      <div class="month-banner__content">
+        <p class="month-banner__month" id="month-banner-month">December 2025</p>
+        <h1 class="month-banner__title" id="month-banner-title">Untitled Movie</h1>
+        <p class="month-banner__tagline" id="month-banner-tagline">
+          Director’s note about this month.
+        </p>
+      </div>
+    </section>
+
+    <section class="month-calendar fade-slow-up">
+      <header class="month-calendar__header">
+        <button class="nav-arrow" id="prev-month-btn" aria-label="Previous month">
+          —
+        </button>
+        <div class="month-calendar__label" id="month-calendar-label">December 2025</div>
+        <button class="nav-arrow" id="next-month-btn" aria-label="Next month">
+          —
+        </button>
+      </header>
+
+      <div class="month-calendar__grid" id="calendar-grid" aria-label="Monthly diary">
+        <!-- Days injected via JS -->
+      </div>
+      <p class="month-calendar__hint">
+        Each day is a scene. Click a date to enter that moment.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer fade-slow">
+    <span class="site-footer__note">A month as a single film, one frame per day.</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
