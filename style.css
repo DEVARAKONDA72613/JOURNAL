@@ -257,3 +257,71 @@ main {
         grid-column: span 1;
     }
 }
+/* ============================
+   COVER SCREEN
+============================ */
+
+#coverScreen {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cover-content {
+    text-align: center;
+    color: white;
+    backdrop-filter: blur(6px);
+    padding: 30px;
+    border-radius: 20px;
+}
+
+/* Title & Subtitle */
+
+.cover-title {
+    font-size: 48px;
+    margin-top: 15px;
+}
+
+.cover-subtitle {
+    margin-top: 10px;
+    font-size: 20px;
+    opacity: 0.85;
+}
+
+/* Buttons */
+
+.enter-btn, .select-month-btn {
+    margin-top: 22px;
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 17px;
+    background: rgba(255,255,255,0.3);
+    color: white;
+    backdrop-filter: blur(6px);
+}
+
+.enter-btn:hover,
+.select-month-btn:hover {
+    background: rgba(255,255,255,0.5);
+}
+
+/* Diary small icon */
+
+.diary-badge {
+    font-size: 22px;
+    margin-bottom: 20px;
+    background: rgba(255,255,255,0.15);
+    padding: 8px 20px;
+    border-radius: 15px;
+    display: inline-block;
+    backdrop-filter: blur(8px);
+}
