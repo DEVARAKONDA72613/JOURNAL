@@ -1,5 +1,5 @@
 // ======================
-// SUPABASE INITIALIZATION
+// SUPABASE INIT
 // ======================
 const supabase = supabase.createClient(
   "https://klrjkwouiixybuyjglbj.supabase.co",
@@ -7,14 +7,16 @@ const supabase = supabase.createClient(
 );
 
 // ======================
-// DOM ELEMENTS
+// ELEMENT LOOKUP
 // ======================
 const coverScreen = document.getElementById("coverScreen");
 const enterBtn = document.getElementById("enterBtn");
 
-const currentDateDisplay = document.getElementById("currentDate");
-const monthYearDisplay = document.getElementById("monthYear");
+const prevMonthBtn = document.getElementById("prevMonth");
+const nextMonthBtn = document.getElementById("nextMonth");
+
 const calendarGrid = document.getElementById("calendarGrid");
+const monthYearDisplay = document.getElementById("monthYear");
 
 const journalEntry = document.getElementById("journalEntry");
 const saveJournalBtn = document.getElementById("saveJournal");
@@ -24,12 +26,59 @@ const taskInput = document.getElementById("taskInput");
 const addTaskBtn = document.getElementById("addTask");
 const taskList = document.getElementById("taskList");
 
-const prevMonthBtn = document.getElementById("prevMonth");
-const nextMonthBtn = document.getElementById("nextMonth");
-
-const journalTitle = document.getElementById("journalTitle");
-const tasksTitle = document.getElementById("tasksTitle");
+const currentDateDisplay = document.getElementById("currentDate");
 const backgroundDiv = document.getElementById("background");
+
+// ======================
+// CHECK ALL ELEMENTS EXIST
+// ======================
+function checkIDs() {
+  const required = {
+    enterBtn,
+    prevMonthBtn,
+    nextMonthBtn,
+    saveJournalBtn,
+    clearJournalBtn,
+    addTaskBtn,
+    journalEntry,
+    calendarGrid,
+    monthYearDisplay,
+    taskInput,
+    taskList,
+    currentDateDisplay
+  };
+
+  for (const [name, elem] of Object.entries(required)) {
+    if (!elem) console.error("❌ Missing element ID:", name);
+  }
+}
+checkIDs();
+
+// ======================
+// LOGIN FLOW
+// ======================
+async function ensureLogin() {
+  const { data } = await supabase.auth.getSession();
+
+  if (!data.session) {
+    console.log("🔐 Logging in with Google...");
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: window.location.href }
+    });
+  }
+}
+
+document.addEventListener("DOMContentLoaded", ensureLogin);
+
+// ======================
+// COVER BUTTON
+// ======================
+if (enterBtn) {
+  enterBtn.addEventListener("click", () => {
+    coverScreen.style.display = "none";
+  });
+}
 
 // ======================
 // STATE
@@ -48,67 +97,42 @@ const monthImages = {
   7: "aug.jpg",
   8: "sept.jpg",
   9: "oct.jpg",
-  10: "nov.jpg",
-  11: "dec.jpg"
+ 10: "nov.jpg",
+ 11: "dec.jpg"
 };
 
 // ======================
-// LOGIN FLOW
+// HELPER FUNCTIONS
 // ======================
-async function ensureLogin() {
-  const { data } = await supabase.auth.getSession();
-
-  if (!data.session) {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: window.location.href }
-    });
-  }
-}
-
-document.addEventListener("DOMContentLoaded", ensureLogin);
-
-// ======================
-// COVER BUTTON
-// ======================
-enterBtn.addEventListener("click", () => {
-  coverScreen.style.display = "none";
-});
-
-// ======================
-// DATE HELPERS
-// ======================
-function dateKey(date) {
-  return date.toISOString().split("T")[0];
+function dateKey(d) {
+  return d.toISOString().split("T")[0];
 }
 
 function updateHeader() {
-  if (!selectedDate) return;
-  currentDateDisplay.textContent = selectedDate.toDateString();
+  if (selectedDate) {
+    currentDateDisplay.textContent = selectedDate.toDateString();
+  }
 }
 
 function updateBackground() {
-  if (!selectedDate) return;
-  backgroundDiv.style.backgroundImage =
-    `url('${monthImages[selectedDate.getMonth()]}')`;
+  if (selectedDate) {
+    backgroundDiv.style.backgroundImage =
+      `url('${monthImages[selectedDate.getMonth()]}')`;
+  }
 }
 
 // ======================
-// CALENDAR
+// CALENDAR RENDER
 // ======================
 function renderCalendar() {
   const month = currentMonth.getMonth();
   const year = currentMonth.getFullYear();
 
-  monthYearDisplay.textContent =
+  monthYearDisplay.textContent = 
     currentMonth.toLocaleString("en-US", { month: "long", year: "numeric" });
 
   calendarGrid.innerHTML = "";
 
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-  // Day labels
   ["SUN","MON","TUE","WED","THU","FRI","SAT"].forEach(d => {
     const cell = document.createElement("div");
     cell.textContent = d;
@@ -116,20 +140,21 @@ function renderCalendar() {
     calendarGrid.appendChild(cell);
   });
 
-  // Empty cells
+  const firstDay = new Date(year, month, 1).getDay();
+  const days = new Date(year, month + 1, 0).getDate();
+
   for (let i = 0; i < firstDay; i++) {
     const empty = document.createElement("div");
     empty.classList.add("inactive");
     calendarGrid.appendChild(empty);
   }
 
-  // Day cells
-  for (let d = 1; d <= daysInMonth; d++) {
+  for (let d = 1; d <= days; d++) {
     const cell = document.createElement("div");
     cell.textContent = d;
+
     const dateObj = new Date(year, month, d);
 
-    // highlight selected
     if (selectedDate && dateObj.toDateString() === selectedDate.toDateString()) {
       cell.classList.add("active");
     }
@@ -147,22 +172,29 @@ function renderCalendar() {
   }
 }
 
-prevMonthBtn.addEventListener("click", () => {
-  if (currentMonth.getMonth() > 0) {
-    currentMonth.setMonth(currentMonth.getMonth() - 1);
-    renderCalendar();
-  }
-});
+// ======================
+// MONTH BUTTONS
+// ======================
+if (prevMonthBtn) {
+  prevMonthBtn.addEventListener("click", () => {
+    if (currentMonth.getMonth() > 0) {
+      currentMonth.setMonth(currentMonth.getMonth() - 1);
+      renderCalendar();
+    }
+  });
+}
 
-nextMonthBtn.addEventListener("click", () => {
-  if (currentMonth.getMonth() < 11) {
-    currentMonth.setMonth(currentMonth.getMonth() + 1);
-    renderCalendar();
-  }
-});
+if (nextMonthBtn) {
+  nextMonthBtn.addEventListener("click", () => {
+    if (currentMonth.getMonth() < 11) {
+      currentMonth.setMonth(currentMonth.getMonth() + 1);
+      renderCalendar();
+    }
+  });
+}
 
 // ======================
-// JOURNAL
+// JOURNAL LOAD/SAVE
 // ======================
 async function loadJournal() {
   if (!selectedDate) return;
@@ -174,26 +206,29 @@ async function loadJournal() {
     .maybeSingle();
 
   journalEntry.value = data?.content || "";
-  journalTitle.textContent = `Journal for ${selectedDate.toDateString()}`;
 }
 
-saveJournalBtn.addEventListener("click", async () => {
-  if (!selectedDate) return;
+if (saveJournalBtn) {
+  saveJournalBtn.addEventListener("click", async () => {
+    if (!selectedDate) return;
 
-  await supabase.from("journal_entries").upsert({
-    entry_date: dateKey(selectedDate),
-    content: journalEntry.value
+    await supabase.from("journal_entries").upsert({
+      entry_date: dateKey(selectedDate),
+      content: journalEntry.value
+    });
+
+    alert("Saved!");
   });
+}
 
-  alert("Saved!");
-});
-
-clearJournalBtn.addEventListener("click", () => {
-  journalEntry.value = "";
-});
+if (clearJournalBtn) {
+  clearJournalBtn.addEventListener("click", () => {
+    journalEntry.value = "";
+  });
+}
 
 // ======================
-// TASKS
+// TASK HANDLING
 // ======================
 async function loadTasks() {
   if (!selectedDate) return;
@@ -210,22 +245,22 @@ async function loadTasks() {
     li.textContent = task.text;
     taskList.appendChild(li);
   });
-
-  tasksTitle.textContent = `Tasks for ${selectedDate.toDateString()}`;
 }
 
-addTaskBtn.addEventListener("click", async () => {
-  if (!selectedDate) return;
-  if (!taskInput.value.trim()) return;
+if (addTaskBtn) {
+  addTaskBtn.addEventListener("click", async () => {
+    if (!selectedDate) return;
+    if (!taskInput.value.trim()) return;
 
-  await supabase.from("tasks").insert({
-    text: taskInput.value.trim(),
-    task_date: dateKey(selectedDate)
+    await supabase.from("tasks").insert({
+      text: taskInput.value.trim(),
+      task_date: dateKey(selectedDate)
+    });
+
+    taskInput.value = "";
+    loadTasks();
   });
-
-  taskInput.value = "";
-  loadTasks();
-});
+}
 
 // ======================
 renderCalendar();
