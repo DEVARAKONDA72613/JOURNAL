@@ -1,6 +1,6 @@
-/* ============================
-   MONTH BACKGROUND IMAGES
-============================ */
+/* ============================================================
+   BACKGROUND IMAGES FOR MONTHS
+============================================================ */
 
 const monthBackgrounds = {
     0: "jan.jpg",
@@ -17,9 +17,9 @@ const monthBackgrounds = {
     11: "dec.jpg"
 };
 
-/* ============================
+/* ============================================================
    DOM ELEMENTS
-============================ */
+============================================================ */
 
 const backgroundDiv = document.getElementById("background");
 const currentDateDisplay = document.getElementById("currentDate");
@@ -39,20 +39,33 @@ const taskList = document.getElementById("taskList");
 const prevMonthBtn = document.getElementById("prevMonth");
 const nextMonthBtn = document.getElementById("nextMonth");
 
-/* ============================
-   INITIAL DATE SETUP (2026 ONLY)
-============================ */
+/* ============================================================
+   DATE SYSTEM (COVER FIRST)
+============================================================ */
 
-let currentDate = new Date("2026-12-01");
-let selectedDate = new Date("2026-12-01");
+let currentDate = new Date("2026-01-01");
+let selectedDate = null; // Show cover image initially
 
 updateWholeUI();
 
-/* ============================
-   FUNCTION: UPDATE EVERYTHING
-============================ */
+/* ============================================================
+   UPDATE ALL UI
+============================================================ */
 
 function updateWholeUI() {
+    // If no date selected → show cover page
+    if (!selectedDate) {
+        backgroundDiv.style.backgroundImage = "url('cover.jpg')";
+        currentDateDisplay.textContent = "Welcome to your 2026 Journal";
+        monthYearDisplay.textContent = "Select a Month";
+        calendarGrid.innerHTML = "";
+        journalTitle.textContent = "Journal";
+        journalEntry.value = "";
+        tasksTitle.textContent = "Tasks";
+        taskList.innerHTML = "";
+        return;
+    }
+
     updateHeaderDate();
     updateBackground();
     updateCalendar();
@@ -60,18 +73,18 @@ function updateWholeUI() {
     loadTasks();
 }
 
-/* ============================
+/* ============================================================
    HEADER DATE
-============================ */
+============================================================ */
 
 function updateHeaderDate() {
     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
     currentDateDisplay.textContent = selectedDate.toLocaleDateString("en-US", options);
 }
 
-/* ============================
-   BACKGROUND UPDATER
-============================ */
+/* ============================================================
+   BACKGROUND HANDLER
+============================================================ */
 
 function updateBackground() {
     const month = selectedDate.getMonth();
@@ -79,9 +92,9 @@ function updateBackground() {
     backgroundDiv.style.backgroundImage = `url('${bgImage}')`;
 }
 
-/* ============================
-   BUILD CALENDAR GRID
-============================ */
+/* ============================================================
+   CALENDAR BUILDER
+============================================================ */
 
 function updateCalendar() {
     calendarGrid.innerHTML = "";
@@ -104,11 +117,11 @@ function updateCalendar() {
         calendarGrid.appendChild(cell);
     });
 
-    // Empty cells before the 1st day
+    // Empty slots before first day
     for (let i = 0; i < firstDay; i++) {
-        const emptyCell = document.createElement("div");
-        emptyCell.classList.add("inactive");
-        calendarGrid.appendChild(emptyCell);
+        const empty = document.createElement("div");
+        empty.classList.add("inactive");
+        calendarGrid.appendChild(empty);
     }
 
     // Actual days
@@ -118,8 +131,8 @@ function updateCalendar() {
 
         const thisDate = new Date(year, month, day);
 
-        // Highlight selected day
         if (
+            selectedDate &&
             thisDate.getDate() === selectedDate.getDate() &&
             thisDate.getMonth() === selectedDate.getMonth()
         ) {
@@ -135,9 +148,9 @@ function updateCalendar() {
     }
 }
 
-/* ============================
+/* ============================================================
    MONTH SWITCHING
-============================ */
+============================================================ */
 
 prevMonthBtn.addEventListener("click", () => {
     const m = currentDate.getMonth();
@@ -151,9 +164,9 @@ nextMonthBtn.addEventListener("click", () => {
     updateWholeUI();
 });
 
-/* ============================
-   JOURNAL SAVE + LOAD
-============================ */
+/* ============================================================
+   JOURNAL SAVE / LOAD
+============================================================ */
 
 function getDateKey() {
     return selectedDate.toISOString().split("T")[0];
@@ -175,16 +188,18 @@ clearJournalBtn.addEventListener("click", () => {
     journalEntry.value = "";
 });
 
-/* ============================
-   TASKS SAVE + LOAD
-============================ */
+/* ============================================================
+   TASKS SAVE / LOAD
+============================================================ */
 
 function loadTasks() {
     const key = "tasks_" + getDateKey();
     const saved = JSON.parse(localStorage.getItem(key) || "[]");
 
     taskList.innerHTML = "";
-    saved.forEach((t, index) => renderTask(t, index));
+
+    saved.forEach(task => renderTask(task));
+
     tasksTitle.textContent = `Tasks for ${selectedDate.toDateString()}`;
 }
 
@@ -202,42 +217,61 @@ function saveTasks() {
     localStorage.setItem(key, JSON.stringify(tasks));
 }
 
-function renderTask(task, index) {
+/* ============================================================
+   RENDER A TASK (WITH CHECKBOX)
+============================================================ */
+
+function renderTask(task) {
     const li = document.createElement("li");
     if (task.done) li.classList.add("task-done");
 
+    // Checkbox
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = task.done || false;
+    checkbox.classList.add("task-checkbox");
+
+    // Task text
     const textSpan = document.createElement("span");
     textSpan.textContent = task.text;
     textSpan.classList.add("t-text");
 
+    // Delete button
     const deleteBtn = document.createElement("span");
     deleteBtn.textContent = "Delete";
     deleteBtn.classList.add("delete-btn");
 
-    li.appendChild(textSpan);
-    li.appendChild(deleteBtn);
+    /* --- Events --- */
 
-    // Toggle done
-    li.addEventListener("click", () => {
+    checkbox.addEventListener("change", () => {
         li.classList.toggle("task-done");
         saveTasks();
     });
 
-    // Delete
     deleteBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         li.remove();
         saveTasks();
     });
 
+    /* --- Build LI --- */
+
+    li.appendChild(checkbox);
+    li.appendChild(textSpan);
+    li.appendChild(deleteBtn);
+
     taskList.appendChild(li);
 }
+
+/* ============================================================
+   ADD NEW TASK
+============================================================ */
 
 addTaskBtn.addEventListener("click", () => {
     if (taskInput.value.trim() === "") return;
 
-    const task = { text: taskInput.value, done: false };
-    renderTask(task);
+    const newTask = { text: taskInput.value, done: false };
+    renderTask(newTask);
     saveTasks();
 
     taskInput.value = "";
