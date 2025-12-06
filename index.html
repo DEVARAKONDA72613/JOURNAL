@@ -1,69 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>2026 Journal</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 
-  <!-- Supabase CDN (non-module, works everywhere) -->
+  <!-- Supabase v2 (non-module, global `window.supabase`) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- Our app logic -->
   <script defer src="script.js"></script>
 </head>
-<body>
 
-  <!-- COVER SCREEN -->
-  <div id="coverScreen" class="cover">
-    <div class="cover-box">
+<body>
+  <!-- ========== COVER PAGE ========== -->
+  <div id="coverScreen">
+    <div class="cover-center">
       <h1 class="cover-title">My 2026 Journal & Daily Tasks</h1>
-      <p class="cover-sub">Capture your 2026, one day at a time.</p>
+      <p class="cover-subtitle">Capture your 2026, one day at a time.</p>
       <button id="enterBtn" class="cover-btn">Enter 2026 Journal</button>
     </div>
   </div>
 
-  <!-- BACKGROUND -->
+  <!-- Background + overlay your CSS already styles -->
   <div id="background"></div>
   <div class="overlay"></div>
 
+  <!-- HEADER -->
   <header>
     <h1>2026 Journal</h1>
     <p id="currentDate"></p>
   </header>
 
+  <!-- MAIN LAYOUT (matches your old IDs/classes) -->
   <main>
-
-    <!-- CALENDAR -->
-    <section class="calendar-card glass">
+    <!-- Calendar -->
+    <section class="calendar-card glass card-animate" id="calendarCard">
       <div class="calendar-header">
-        <button id="prevMonth">&#8249;</button>
-        <h2 id="monthYear">January 2026</h2>
-        <button id="nextMonth">&#8250;</button>
+        <button id="prevMonth" class="nav-btn">&#8249;</button>
+        <h2 id="monthYear">Select a Month</h2>
+        <button id="nextMonth" class="nav-btn">&#8250;</button>
       </div>
-      <div id="calendarGrid" class="calendar-grid"></div>
+      <div class="calendar-grid" id="calendarGrid"></div>
     </section>
 
-    <!-- JOURNAL -->
-    <section class="journal-card glass">
+    <!-- Journal -->
+    <section class="journal-card glass card-animate" id="journalCard">
       <h2 id="journalTitle">Journal</h2>
-      <textarea id="journalEntry" placeholder="Write your journal..."></textarea>
+      <textarea
+        id="journalEntry"
+        placeholder="Write your thoughts, experiences, and reflections for today..."
+      ></textarea>
       <div class="btn-row">
         <button id="saveJournal" class="pill-btn primary">Save</button>
         <button id="clearJournal" class="pill-btn">Clear</button>
       </div>
     </section>
 
-    <!-- TASKS -->
-    <section class="tasks-card glass">
+    <!-- Tasks -->
+    <section class="tasks-card glass card-animate" id="tasksCard">
       <h2 id="tasksTitle">Tasks</h2>
       <div class="task-input">
-        <input id="taskInput" placeholder="Add a new task...">
+        <input
+          type="text"
+          id="taskInput"
+          placeholder="Add a new task..."
+        />
         <button id="addTask" class="pill-btn primary">Add</button>
       </div>
       <ul id="taskList"></ul>
     </section>
-
   </main>
-
 </body>
 </html>
