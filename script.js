@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  /* ============================================================
-     MONTH BACKGROUND IMAGES
-  ============================================================ */
+  /* ================= MONTH BACKGROUNDS ================= */
 
   const monthBackgrounds = {
     0: "jan.jpg",
@@ -12,15 +10,13 @@ document.addEventListener("DOMContentLoaded", () => {
     5: "june.jpg",
     6: "july.jpg",
     7: "aug.jpg",
-    8: "sept.jpg",
+    8: "sept.jpg", // make sure spelling + case match your repo
     9: "oct.jpg",
     10: "nov.jpg",
     11: "dec.jpg",
   };
 
-  /* ============================================================
-     DOM ELEMENTS
-  ============================================================ */
+  /* ================= DOM ELEMENTS ================= */
 
   const backgroundDiv = document.getElementById("background");
   const currentDateDisplay = document.getElementById("currentDate");
@@ -44,54 +40,37 @@ document.addEventListener("DOMContentLoaded", () => {
   const enterBtn = document.getElementById("enterBtn");
   const monthBtn = document.getElementById("monthBtn");
 
-  /* ============================================================
-     DATE SYSTEM
-  ============================================================ */
+  /* ================= DATES ================= */
 
   let currentDate = new Date("2026-01-01");
-  let selectedDate = null; // cover mode at start
+  let selectedDate = null; // cover mode initially
 
-  // Initial render
+  // initial render
   updateWholeUI();
 
-  /* ============================================================
-     COVER SCREEN BUTTONS
-  ============================================================ */
+  /* ================= COVER BUTTONS ================= */
 
   function hideCover() {
-    if (coverScreen) {
-      coverScreen.style.display = "none";
-    }
-    // Optionally pick a default date (e.g. Jan 1) when entering
+    if (coverScreen) coverScreen.style.display = "none";
     if (!selectedDate) {
       selectedDate = new Date("2026-01-01");
       updateWholeUI();
     }
   }
 
-  if (enterBtn) {
-    enterBtn.addEventListener("click", hideCover);
-  }
+  if (enterBtn) enterBtn.addEventListener("click", hideCover);
+  if (monthBtn) monthBtn.addEventListener("click", hideCover);
 
-  if (monthBtn) {
-    monthBtn.addEventListener("click", hideCover);
-  }
-
-  /* ============================================================
-     MAIN UI UPDATER
-  ============================================================ */
+  /* ================= MAIN UI UPDATE ================= */
 
   function updateWholeUI() {
-    updateCalendar(); // calendar always visible
+    updateCalendar();
 
     if (!selectedDate) {
-      // cover mode – no specific day
-      if (backgroundDiv) {
+      if (backgroundDiv)
         backgroundDiv.style.backgroundImage = "url('cover.jpg')";
-      }
-      if (currentDateDisplay) {
+      if (currentDateDisplay)
         currentDateDisplay.textContent = "Welcome to your 2026 Journal";
-      }
       if (journalTitle) journalTitle.textContent = "Journal";
       if (journalEntry) journalEntry.value = "";
       if (tasksTitle) tasksTitle.textContent = "Tasks";
@@ -105,9 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTasks();
   }
 
-  /* ============================================================
-     HEADER DATE
-  ============================================================ */
+  /* ================= HEADER DATE ================= */
 
   function updateHeaderDate() {
     if (!currentDateDisplay || !selectedDate) return;
@@ -123,9 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  /* ============================================================
-     BACKGROUND SWITCH
-  ============================================================ */
+  /* ================= BACKGROUND ================= */
 
   function updateBackground() {
     if (!backgroundDiv || !selectedDate) return;
@@ -134,9 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
     backgroundDiv.style.backgroundImage = `url('${img}')`;
   }
 
-  /* ============================================================
-     CALENDAR BUILDER
-  ============================================================ */
+  /* ================= CALENDAR ================= */
 
   function updateCalendar() {
     if (!calendarGrid || !monthYearDisplay) return;
@@ -188,10 +161,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* ============================================================
-     MONTH NAVIGATION
-  ============================================================ */
-
   if (prevMonthBtn) {
     prevMonthBtn.addEventListener("click", () => {
       const m = currentDate.getMonth();
@@ -208,9 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ============================================================
-     JOURNAL STORAGE
-  ============================================================ */
+  /* ================= JOURNAL ================= */
 
   function getDateKey() {
     return selectedDate ? selectedDate.toISOString().split("T")[0] : "";
@@ -239,9 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ============================================================
-     TASKS STORAGE
-  ============================================================ */
+  /* ================= TASKS ================= */
 
   function loadTasks() {
     if (!taskList || !tasksTitle || !selectedDate) return;
