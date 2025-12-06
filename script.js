@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  /* ================= MONTH BACKGROUNDS ================= */
+  /* =============== MONTH BACKGROUNDS =============== */
 
   const monthBackgrounds = {
     0: "jan.jpg",
@@ -10,13 +10,13 @@ document.addEventListener("DOMContentLoaded", () => {
     5: "june.jpg",
     6: "july.jpg",
     7: "aug.jpg",
-    8: "sept.jpg", // make sure spelling + case match your repo
+    8: "sept.jpg", // make sure files are exactly: sept.jpg, oct.jpg, nov.jpg
     9: "oct.jpg",
     10: "nov.jpg",
     11: "dec.jpg",
   };
 
-  /* ================= DOM ELEMENTS ================= */
+  /* =============== DOM ELEMENTS =============== */
 
   const backgroundDiv = document.getElementById("background");
   const currentDateDisplay = document.getElementById("currentDate");
@@ -40,15 +40,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const enterBtn = document.getElementById("enterBtn");
   const monthBtn = document.getElementById("monthBtn");
 
-  /* ================= DATES ================= */
+  /* =============== DATE STATE =============== */
 
   let currentDate = new Date("2026-01-01");
-  let selectedDate = null; // cover mode initially
+  let selectedDate = null; // cover mode
 
-  // initial render
   updateWholeUI();
 
-  /* ================= COVER BUTTONS ================= */
+  /* =============== COVER BUTTONS =============== */
 
   function hideCover() {
     if (coverScreen) coverScreen.style.display = "none";
@@ -61,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (enterBtn) enterBtn.addEventListener("click", hideCover);
   if (monthBtn) monthBtn.addEventListener("click", hideCover);
 
-  /* ================= MAIN UI UPDATE ================= */
+  /* =============== MAIN UI UPDATE =============== */
 
   function updateWholeUI() {
     updateCalendar();
@@ -84,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTasks();
   }
 
-  /* ================= HEADER DATE ================= */
+  /* =============== HEADER DATE =============== */
 
   function updateHeaderDate() {
     if (!currentDateDisplay || !selectedDate) return;
@@ -100,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  /* ================= BACKGROUND ================= */
+  /* =============== BACKGROUND =============== */
 
   function updateBackground() {
     if (!backgroundDiv || !selectedDate) return;
@@ -109,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
     backgroundDiv.style.backgroundImage = `url('${img}')`;
   }
 
-  /* ================= CALENDAR ================= */
+  /* =============== CALENDAR =============== */
 
   function updateCalendar() {
     if (!calendarGrid || !monthYearDisplay) return;
@@ -177,7 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ================= JOURNAL ================= */
+  /* =============== JOURNAL =============== */
 
   function getDateKey() {
     return selectedDate ? selectedDate.toISOString().split("T")[0] : "";
@@ -206,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ================= TASKS ================= */
+  /* =============== TASKS =============== */
 
   function loadTasks() {
     if (!taskList || !tasksTitle || !selectedDate) return;
