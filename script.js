@@ -1,331 +1,213 @@
-// ==============================
-// Supabase client (non-module)
-// ==============================
-const supa = window.supabase.createClient(
+// ---------------------------
+// Supabase Client
+// ---------------------------
+const supa = supabase.createClient(
   "https://klrjkwouixiybuyjglbj.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtscmprd291aXhpeWJ1eWpnbGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMzE5MjAsImV4cCI6MjA4MDYwNzkyMH0.-sdXiwRf0mbA-3WYnddrQPQ2rwMNbOGP0oNziiIZBUE"
 );
 
-// ==============================
-// DOM elements
-// ==============================
-const coverScreen = document.getElementById("coverScreen");
-const enterBtn = document.getElementById("enterBtn");
+// Your GitHub Pages URL:
+const REDIRECT = "https://devarakonda72613.github.io/JOURNAL/";
 
-const backgroundDiv = document.getElementById("background");
-const currentDateDisplay = document.getElementById("currentDate");
-const monthYearDisplay = document.getElementById("monthYear");
-const calendarGrid = document.getElementById("calendarGrid");
+// HTML refs
+const loginScreen = document.getElementById("login-screen");
+const loginBtn = document.getElementById("login-btn");
+const app = document.getElementById("app");
 
-const journalEntry = document.getElementById("journalEntry");
-const journalTitle = document.getElementById("journalTitle");
-const saveJournalBtn = document.getElementById("saveJournal");
-const clearJournalBtn = document.getElementById("clearJournal");
+const monthTitle = document.getElementById("month-title");
+const calendarGrid = document.getElementById("calendar-grid");
 
-const tasksTitle = document.getElementById("tasksTitle");
-const taskInput = document.getElementById("taskInput");
-const addTaskBtn = document.getElementById("addTask");
-const taskList = document.getElementById("taskList");
+const journalTitle = document.getElementById("journal-title");
+const journalText = document.getElementById("journal-text");
 
-const prevMonthBtn = document.getElementById("prevMonth");
-const nextMonthBtn = document.getElementById("nextMonth");
+const tasksTitle = document.getElementById("tasks-title");
+const taskInput = document.getElementById("new-task-input");
+const taskList = document.getElementById("task-list");
 
-// ==============================
-// State
-// ==============================
-let currentUser = null;
-let selectedDate = null;
-let currentMonth = new Date(2026, 0, 1); // January 2026
+// Calendar state
+let currentDate = new Date(2026, 0, 1); // Start in 2026
+let selectedDate = new Date(2026, 0, 1);
+let user = null;
 
-const monthImages = {
-  0: "jan.jpg",
-  1: "feb.jpg",
-  2: "march.jpg",
-  3: "aprl.jpg",
-  4: "mat.jpg",
-  5: "june.jpg",
-  6: "july.jpg",
-  7: "aug.jpg",
-  8: "sept.jpg",
-  9: "oct.jpg",
- 10: "nov.jpg",
- 11: "dec.jpg",
-};
+// ---------------------------
+// LOGIN HANDLER
+// ---------------------------
+loginBtn.addEventListener("click", async () => {
+  await supa.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: REDIRECT
+    }
+  });
+});
 
-// ==============================
-// Helpers
-// ==============================
-function dateKey(date) {
-  return date.toISOString().split("T")[0]; // YYYY-MM-DD
-}
-
-function updateHeader() {
-  if (!selectedDate) return;
-  currentDateDisplay.textContent = selectedDate.toDateString();
-}
-
-function updateBackground() {
-  if (!selectedDate) return;
-  const img = monthImages[selectedDate.getMonth()];
-  backgroundDiv.style.backgroundImage = `url('${img}')`;
-}
-
-// ==============================
-// Auth & init
-// ==============================
+// ---------------------------
+// ON PAGE LOAD — CHECK SESSION
+// ---------------------------
 async function initApp() {
-  // Check for session
   const { data } = await supa.auth.getSession();
 
   if (!data.session) {
-    // No session → go to Google login, and ALWAYS come back to GitHub Pages
-    await supa.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: "https://devarakonda72613.github.io/JOURNAL/",
-      },
-    });
-    return; // After redirect, page reloads
+    console.log("Not logged in");
+    app.style.display = "none";
+    loginScreen.style.display = "flex";
+    return;
   }
 
-  currentUser = data.session.user;
+  user = data.session.user;
 
-  // Initial date = 1 Jan 2026
-  selectedDate = new Date(2026, 0, 1);
-  currentMonth = new Date(2026, 0, 1);
+  // Show app
+  loginScreen.style.display = "none";
+  app.style.display = "block";
 
-  renderCalendar();
-  updateHeader();
-  updateBackground();
-  await loadJournal();
-  await loadTasks();
+  loadCalendar();
+  updateScreen();
+  loadJournal();
+  loadTasks();
 }
 
-// Call init as soon as script runs (HTML is already parsed because of `defer`)
-initApp();
+window.onload = initApp;
 
-// ==============================
-// Cover enter button
-// ==============================
-enterBtn.addEventListener("click", () => {
-  // Your CSS uses .hide to fade out
-  coverScreen.classList.add("hide");
-});
+// ---------------------------
+// CALENDAR BUILDING
+// ---------------------------
+function loadCalendar() {
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
 
-// ==============================
-// Calendar
-// ==============================
-function renderCalendar() {
-  const year = 2026;
-  const month = currentMonth.getMonth();
-
-  const monthName = currentMonth.toLocaleString("en-US", {
+  monthTitle.textContent = currentDate.toLocaleString("default", {
     month: "long",
+    year: "numeric"
   });
-  monthYearDisplay.textContent = `${monthName} 2026`;
 
   calendarGrid.innerHTML = "";
-
-  // Weekday headers
-  const weekdays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-  weekdays.forEach((d) => {
-    const cell = document.createElement("div");
-    cell.textContent = d;
-    cell.classList.add("inactive");
-    calendarGrid.appendChild(cell);
-  });
 
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  // Empty cells before 1st
   for (let i = 0; i < firstDay; i++) {
     const empty = document.createElement("div");
-    empty.classList.add("inactive");
+    empty.className = "empty-day";
     calendarGrid.appendChild(empty);
   }
 
-  // Actual days
   for (let day = 1; day <= daysInMonth; day++) {
-    const cell = document.createElement("div");
-    cell.textContent = day;
+    const div = document.createElement("div");
+    div.className = "day";
+    div.textContent = day;
 
-    const thisDate = new Date(year, month, day);
-
-    if (
-      selectedDate &&
-      thisDate.toDateString() === selectedDate.toDateString()
-    ) {
-      cell.classList.add("active");
-    }
-
-    cell.addEventListener("click", async () => {
-      selectedDate = thisDate;
-      updateHeader();
-      updateBackground();
-      await loadJournal();
-      await loadTasks();
-      renderCalendar(); // re-highlight active
+    div.addEventListener("click", () => {
+      selectedDate = new Date(year, month, day);
+      updateScreen();
+      loadJournal();
+      loadTasks();
     });
 
-    calendarGrid.appendChild(cell);
+    if (
+      day === selectedDate.getDate() &&
+      month === selectedDate.getMonth() &&
+      year === selectedDate.getFullYear()
+    ) {
+      div.classList.add("active");
+    }
+
+    calendarGrid.appendChild(div);
   }
 }
 
-// Month navigation
-prevMonthBtn.addEventListener("click", () => {
-  if (currentMonth.getMonth() > 0) {
-    currentMonth.setMonth(currentMonth.getMonth() - 1);
-    renderCalendar();
-  }
-});
+document.getElementById("prev-month").onclick = () => {
+  currentDate.setMonth(currentDate.getMonth() - 1);
+  loadCalendar();
+};
 
-nextMonthBtn.addEventListener("click", () => {
-  if (currentMonth.getMonth() < 11) {
-    currentMonth.setMonth(currentMonth.getMonth() + 1);
-    renderCalendar();
-  }
-});
+document.getElementById("next-month").onclick = () => {
+  currentDate.setMonth(currentDate.getMonth() + 1);
+  loadCalendar();
+};
 
-// ==============================
-// Journal (Supabase)
-// ==============================
+// ---------------------------
+// UPDATE TITLES
+// ---------------------------
+function updateScreen() {
+  const dateStr = selectedDate.toDateString();
+  journalTitle.textContent = `Journal for ${dateStr}`;
+  tasksTitle.textContent = `Tasks for ${dateStr}`;
+}
+
+// ---------------------------
+// JOURNAL: LOAD / SAVE / CLEAR
+// ---------------------------
 async function loadJournal() {
-  if (!currentUser || !selectedDate) return;
+  const dateISO = selectedDate.toISOString().split("T")[0];
 
-  const { data, error } = await supa
+  const { data } = await supa
     .from("journal_entries")
-    .select("content")
-    .eq("user_id", currentUser.id)
-    .eq("entry_date", dateKey(selectedDate))
-    .maybeSingle();
+    .select("*")
+    .eq("user_id", user.id)
+    .eq("entry_date", dateISO)
+    .single();
 
-  if (error && error.code !== "PGRST116") {
-    console.error("Load journal error:", error);
-    return;
-  }
-
-  journalEntry.value = data?.content || "";
-  journalTitle.textContent = `Journal for ${selectedDate.toDateString()}`;
+  journalText.value = data?.content || "";
 }
 
-saveJournalBtn.addEventListener("click", async () => {
-  if (!currentUser || !selectedDate) return;
+document.getElementById("save-journal").onclick = async () => {
+  const dateISO = selectedDate.toISOString().split("T")[0];
 
-  const payload = {
-    user_id: currentUser.id,
-    entry_date: dateKey(selectedDate),
-    content: journalEntry.value,
-  };
+  await supa.from("journal_entries")
+    .upsert({
+      user_id: user.id,
+      entry_date: dateISO,
+      content: journalText.value
+    });
 
-  const { error } = await supa
-    .from("journal_entries")
-    .upsert(payload, { onConflict: "user_id,entry_date" });
+  alert("Saved!");
+};
 
-  if (error) {
-    console.error("Save journal error:", error);
-    alert("Could not save journal.");
-  } else {
-    alert("Journal saved ✅");
-  }
-});
+document.getElementById("clear-journal").onclick = () => {
+  journalText.value = "";
+};
 
-clearJournalBtn.addEventListener("click", () => {
-  journalEntry.value = "";
-});
-
-// ==============================
-// Tasks (Supabase)
-// ==============================
+// ---------------------------
+// TASKS
+// ---------------------------
 async function loadTasks() {
-  if (!currentUser || !selectedDate) return;
+  const dateISO = selectedDate.toISOString().split("T")[0];
 
-  const { data, error } = await supa
+  const { data } = await supa
     .from("tasks")
-    .select("id, text, done")
-    .eq("user_id", currentUser.id)
-    .eq("task_date", dateKey(selectedDate))
-    .order("id", { ascending: true });
-
-  if (error) {
-    console.error("Load tasks error:", error);
-    return;
-  }
+    .select("*")
+    .eq("user_id", user.id)
+    .eq("task_date", dateISO);
 
   taskList.innerHTML = "";
 
-  (data || []).forEach((task) => {
-    renderTask(task);
+  data?.forEach(t => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <input type="checkbox" ${t.done ? "checked" : ""} />
+      <span>${t.text}</span>
+    `;
+    li.querySelector("input").onchange = async () => {
+      await supa.from("tasks")
+        .update({ done: !t.done })
+        .eq("id", t.id);
+    };
+    taskList.appendChild(li);
   });
-
-  tasksTitle.textContent = `Tasks for ${selectedDate.toDateString()}`;
 }
 
-function renderTask(task) {
-  const li = document.createElement("li");
-  if (task.done) li.classList.add("task-done");
-
-  const checkbox = document.createElement("input");
-  checkbox.type = "checkbox";
-  checkbox.checked = task.done;
-  checkbox.classList.add("task-checkbox");
-
-  const textSpan = document.createElement("span");
-  textSpan.textContent = task.text;
-  textSpan.classList.add("t-text");
-
-  const del = document.createElement("span");
-  del.textContent = "Delete";
-  del.classList.add("delete-btn");
-
-  checkbox.addEventListener("change", async () => {
-    const { error } = await supa
-      .from("tasks")
-      .update({ done: checkbox.checked })
-      .eq("id", task.id);
-    if (error) console.error("Update task error:", error);
-    li.classList.toggle("task-done", checkbox.checked);
-  });
-
-  del.addEventListener("click", async (e) => {
-    e.stopPropagation();
-    const { error } = await supa.from("tasks").delete().eq("id", task.id);
-    if (error) {
-      console.error("Delete task error:", error);
-      return;
-    }
-    li.remove();
-  });
-
-  li.appendChild(checkbox);
-  li.appendChild(textSpan);
-  li.appendChild(del);
-  taskList.appendChild(li);
-}
-
-addTaskBtn.addEventListener("click", async () => {
-  if (!currentUser || !selectedDate) return;
+document.getElementById("add-task").onclick = async () => {
   const text = taskInput.value.trim();
   if (!text) return;
 
-  const payload = {
-    user_id: currentUser.id,
-    task_date: dateKey(selectedDate),
-    text,
-    done: false,
-  };
+  const dateISO = selectedDate.toISOString().split("T")[0];
 
-  const { data, error } = await supa
-    .from("tasks")
-    .insert(payload)
-    .select()
-    .single();
-
-  if (error) {
-    console.error("Add task error:", error);
-    return;
-  }
+  await supa.from("tasks").insert({
+    user_id: user.id,
+    task_date: dateISO,
+    text: text
+  });
 
   taskInput.value = "";
-  renderTask(data);
-});
+  loadTasks();
+};
