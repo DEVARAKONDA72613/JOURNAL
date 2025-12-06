@@ -35,9 +35,8 @@ const nextMonthBtn = document.getElementById("nextMonth");
 // ==============================
 let currentUser = null;
 let selectedDate = null;
-let currentMonth = new Date(2026, 0, 1); // Jan 2026
+let currentMonth = new Date(2026, 0, 1); // January 2026
 
-// month index -> image file
 const monthImages = {
   0: "jan.jpg",
   1: "feb.jpg",
@@ -75,27 +74,26 @@ function updateBackground() {
 // Auth & init
 // ==============================
 async function initApp() {
-  // 1) Ensure logged in
+  // Check for session
   const { data } = await supa.auth.getSession();
 
   if (!data.session) {
-    // redirect to Google
+    // No session → go to Google login, and ALWAYS come back to GitHub Pages
     await supa.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: window.location.href,
+        redirectTo: "https://devarakonda72613.github.io/JOURNAL/",
       },
     });
-    return; // after redirect, page reloads
+    return; // After redirect, page reloads
   }
 
   currentUser = data.session.user;
 
-  // 2) Set initial date
+  // Initial date = 1 Jan 2026
   selectedDate = new Date(2026, 0, 1);
   currentMonth = new Date(2026, 0, 1);
 
-  // 3) Render UI
   renderCalendar();
   updateHeader();
   updateBackground();
@@ -103,11 +101,15 @@ async function initApp() {
   await loadTasks();
 }
 
+// Call init as soon as script runs (HTML is already parsed because of `defer`)
+initApp();
+
 // ==============================
 // Cover enter button
 // ==============================
 enterBtn.addEventListener("click", () => {
-  coverScreen.classList.add("hide"); // your CSS already defines .hide
+  // Your CSS uses .hide to fade out
+  coverScreen.classList.add("hide");
 });
 
 // ==============================
@@ -124,7 +126,7 @@ function renderCalendar() {
 
   calendarGrid.innerHTML = "";
 
-  // weekday headers
+  // Weekday headers
   const weekdays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   weekdays.forEach((d) => {
     const cell = document.createElement("div");
@@ -136,12 +138,14 @@ function renderCalendar() {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
+  // Empty cells before 1st
   for (let i = 0; i < firstDay; i++) {
     const empty = document.createElement("div");
     empty.classList.add("inactive");
     calendarGrid.appendChild(empty);
   }
 
+  // Actual days
   for (let day = 1; day <= daysInMonth; day++) {
     const cell = document.createElement("div");
     cell.textContent = day;
@@ -161,14 +165,14 @@ function renderCalendar() {
       updateBackground();
       await loadJournal();
       await loadTasks();
-      renderCalendar(); // re-render to update active day
+      renderCalendar(); // re-highlight active
     });
 
     calendarGrid.appendChild(cell);
   }
 }
 
-// month navigation
+// Month navigation
 prevMonthBtn.addEventListener("click", () => {
   if (currentMonth.getMonth() > 0) {
     currentMonth.setMonth(currentMonth.getMonth() - 1);
@@ -325,8 +329,3 @@ addTaskBtn.addEventListener("click", async () => {
   taskInput.value = "";
   renderTask(data);
 });
-
-// ==============================
-// Kick everything off
-// ==============================
-initApp();
