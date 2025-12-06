@@ -1,17 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
-<meta name="apple-mobile-web-app-capable" content="yes"> <!-- Keep for older iOS compatibility -->
-<meta name="mobile-web-app-capable" content="yes">      <!-- Use for broader PWA support -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My 2026 Journal & Daily Tasks</title>
 
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>My 2026 Journal & Daily Tasks</title>
+    <!-- Link your CSS file -->
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <div id="root"></div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+        <header>
+            <h1>My 2026 Journal & Daily Tasks</h1>
+        </header>
+
+        <!-- DATE SELECTOR -->
+        <div class="date-picker">
+            <label for="selectedDate">Select Date:</label>
+            <input type="date" id="selectedDate" min="2026-01-01" max="2026-12-31">
+        </div>
+
+        <!-- JOURNAL AREA -->
+        <section class="journal-section">
+            <h2>Journal Entry</h2>
+            <textarea id="journalText" placeholder="Write your thoughts..."></textarea>
+            <button id="saveJournal">Save Journal</button>
+        </section>
+
+        <!-- TASK AREA -->
+        <section class="tasks-section">
+            <h2>Tasks</h2>
+            <div class="task-input">
+                <input type="text" id="taskInput" placeholder="New task...">
+                <button id="addTask">Add</button>
+            </div>
+
+            <ul id="taskList"></ul>
+        </section>
+    </div>
+
+    <!-- Load your JavaScript -->
+    <script src="script.js"></script>
+
 </body>
 </html>
-
-
