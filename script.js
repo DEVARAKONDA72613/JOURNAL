@@ -1,12 +1,14 @@
-// ==================== SUPABASE CLIENT ====================
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/esm/supabase.min.js";
-
-const supabase = createClient(
+// ======================
+// SUPABASE INITIALIZATION
+// ======================
+const supabase = supabase.createClient(
   "https://klrjkwouiixybuyjglbj.supabase.co",
   "sb_publishable_WUHY9m7PZETLbC9USMlJRg_9ur8Ijcb"
 );
 
-// ==================== DOM ELEMENTS ====================
+// ======================
+// DOM ELEMENTS
+// ======================
 const coverScreen = document.getElementById("coverScreen");
 const enterBtn = document.getElementById("enterBtn");
 
@@ -17,19 +19,21 @@ const calendarGrid = document.getElementById("calendarGrid");
 const journalEntry = document.getElementById("journalEntry");
 const saveJournalBtn = document.getElementById("saveJournal");
 const clearJournalBtn = document.getElementById("clearJournal");
-const journalTitle = document.getElementById("journalTitle");
 
 const taskInput = document.getElementById("taskInput");
 const addTaskBtn = document.getElementById("addTask");
 const taskList = document.getElementById("taskList");
-const tasksTitle = document.getElementById("tasksTitle");
 
 const prevMonthBtn = document.getElementById("prevMonth");
 const nextMonthBtn = document.getElementById("nextMonth");
 
+const journalTitle = document.getElementById("journalTitle");
+const tasksTitle = document.getElementById("tasksTitle");
 const backgroundDiv = document.getElementById("background");
 
-// ==================== STATE ====================
+// ======================
+// STATE
+// ======================
 let selectedDate = null;
 let currentMonth = new Date(2026, 0, 1);
 
@@ -45,10 +49,12 @@ const monthImages = {
   8: "sept.jpg",
   9: "oct.jpg",
   10: "nov.jpg",
-  11: "dec.jpg",
+  11: "dec.jpg"
 };
 
-// ==================== AUTH ====================
+// ======================
+// LOGIN FLOW
+// ======================
 async function ensureLogin() {
   const { data } = await supabase.auth.getSession();
 
@@ -62,12 +68,16 @@ async function ensureLogin() {
 
 document.addEventListener("DOMContentLoaded", ensureLogin);
 
-// ==================== COVER BUTTON ====================
+// ======================
+// COVER BUTTON
+// ======================
 enterBtn.addEventListener("click", () => {
-  coverScreen.classList.add("hide");
+  coverScreen.style.display = "none";
 });
 
-// ==================== DATE HELPERS ====================
+// ======================
+// DATE HELPERS
+// ======================
 function dateKey(date) {
   return date.toISOString().split("T")[0];
 }
@@ -83,7 +93,9 @@ function updateBackground() {
     `url('${monthImages[selectedDate.getMonth()]}')`;
 }
 
-// ==================== CALENDAR ====================
+// ======================
+// CALENDAR
+// ======================
 function renderCalendar() {
   const month = currentMonth.getMonth();
   const year = currentMonth.getFullYear();
@@ -96,34 +108,34 @@ function renderCalendar() {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  for (let i = 0; i < 7; i++) {
-    const day = document.createElement("div");
-    day.textContent = ["SUN","MON","TUE","WED","THU","FRI","SAT"][i];
-    day.classList.add("inactive");
-    calendarGrid.appendChild(day);
-  }
+  // Day labels
+  ["SUN","MON","TUE","WED","THU","FRI","SAT"].forEach(d => {
+    const cell = document.createElement("div");
+    cell.textContent = d;
+    cell.classList.add("inactive");
+    calendarGrid.appendChild(cell);
+  });
 
+  // Empty cells
   for (let i = 0; i < firstDay; i++) {
     const empty = document.createElement("div");
     empty.classList.add("inactive");
     calendarGrid.appendChild(empty);
   }
 
+  // Day cells
   for (let d = 1; d <= daysInMonth; d++) {
     const cell = document.createElement("div");
     cell.textContent = d;
+    const dateObj = new Date(year, month, d);
 
-    const thisDate = new Date(year, month, d);
-
-    if (
-      selectedDate &&
-      thisDate.toDateString() === selectedDate.toDateString()
-    ) {
+    // highlight selected
+    if (selectedDate && dateObj.toDateString() === selectedDate.toDateString()) {
       cell.classList.add("active");
     }
 
     cell.addEventListener("click", () => {
-      selectedDate = thisDate;
+      selectedDate = dateObj;
       updateHeader();
       updateBackground();
       loadJournal();
@@ -149,7 +161,9 @@ nextMonthBtn.addEventListener("click", () => {
   }
 });
 
-// ==================== JOURNAL ====================
+// ======================
+// JOURNAL
+// ======================
 async function loadJournal() {
   if (!selectedDate) return;
 
@@ -160,8 +174,7 @@ async function loadJournal() {
     .maybeSingle();
 
   journalEntry.value = data?.content || "";
-  journalTitle.textContent = 
-    `Journal for ${selectedDate.toDateString()}`;
+  journalTitle.textContent = `Journal for ${selectedDate.toDateString()}`;
 }
 
 saveJournalBtn.addEventListener("click", async () => {
@@ -179,7 +192,9 @@ clearJournalBtn.addEventListener("click", () => {
   journalEntry.value = "";
 });
 
-// ==================== TASKS ====================
+// ======================
+// TASKS
+// ======================
 async function loadTasks() {
   if (!selectedDate) return;
 
@@ -196,8 +211,7 @@ async function loadTasks() {
     taskList.appendChild(li);
   });
 
-  tasksTitle.textContent =
-    `Tasks for ${selectedDate.toDateString()}`;
+  tasksTitle.textContent = `Tasks for ${selectedDate.toDateString()}`;
 }
 
 addTaskBtn.addEventListener("click", async () => {
@@ -213,5 +227,5 @@ addTaskBtn.addEventListener("click", async () => {
   loadTasks();
 });
 
-// ==================== INITIALIZE ====================
+// ======================
 renderCalendar();
