@@ -20,21 +20,12 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-size: cover;
-    background-position: center;
+    background-size: cover;           /* ORIGINAL VERSION */
+    background-position: center top;  /* moves the face UP so it is less cropped */
+    background-repeat: no-repeat;
     z-index: -3;
 }
 
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.45);
-    backdrop-filter: blur(5px);
-    z-index: -2;
-}
 
 /* ---------------- HEADER ---------------- */
 
