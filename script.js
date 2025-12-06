@@ -1,8 +1,9 @@
-/* ============================================================
-   MONTH BACKGROUND IMAGES
-============================================================ */
+document.addEventListener("DOMContentLoaded", () => {
+  /* ============================================================
+     MONTH BACKGROUND IMAGES
+  ============================================================ */
 
-const monthBackgrounds = {
+  const monthBackgrounds = {
     0: "jan.jpg",
     1: "feb.jpg",
     2: "march.jpg",
@@ -14,106 +15,132 @@ const monthBackgrounds = {
     8: "sept.jpg",
     9: "oct.jpg",
     10: "nov.jpg",
-    11: "dec.jpg"
-};
+    11: "dec.jpg",
+  };
 
-/* ============================================================
-   DOM ELEMENTS
-============================================================ */
+  /* ============================================================
+     DOM ELEMENTS
+  ============================================================ */
 
-const backgroundDiv = document.getElementById("background");
-const currentDateDisplay = document.getElementById("currentDate");
-const monthYearDisplay = document.getElementById("monthYear");
-const calendarGrid = document.getElementById("calendarGrid");
+  const backgroundDiv = document.getElementById("background");
+  const currentDateDisplay = document.getElementById("currentDate");
+  const monthYearDisplay = document.getElementById("monthYear");
+  const calendarGrid = document.getElementById("calendarGrid");
 
-const journalEntry = document.getElementById("journalEntry");
-const saveJournalBtn = document.getElementById("saveJournal");
-const clearJournalBtn = document.getElementById("clearJournal");
-const journalTitle = document.getElementById("journalTitle");
+  const journalEntry = document.getElementById("journalEntry");
+  const saveJournalBtn = document.getElementById("saveJournal");
+  const clearJournalBtn = document.getElementById("clearJournal");
+  const journalTitle = document.getElementById("journalTitle");
 
-const tasksTitle = document.getElementById("tasksTitle");
-const taskInput = document.getElementById("taskInput");
-const addTaskBtn = document.getElementById("addTask");
-const taskList = document.getElementById("taskList");
+  const tasksTitle = document.getElementById("tasksTitle");
+  const taskInput = document.getElementById("taskInput");
+  const addTaskBtn = document.getElementById("addTask");
+  const taskList = document.getElementById("taskList");
 
-const prevMonthBtn = document.getElementById("prevMonth");
-const nextMonthBtn = document.getElementById("nextMonth");
+  const prevMonthBtn = document.getElementById("prevMonth");
+  const nextMonthBtn = document.getElementById("nextMonth");
 
-const coverScreen = document.getElementById("coverScreen");
-const enterBtn = document.getElementById("enterBtn");
-const monthBtn = document.getElementById("monthBtn");
+  const coverScreen = document.getElementById("coverScreen");
+  const enterBtn = document.getElementById("enterBtn");
+  const monthBtn = document.getElementById("monthBtn");
 
-/* ============================================================
-   DATE SYSTEM
-============================================================ */
+  /* ============================================================
+     DATE SYSTEM
+  ============================================================ */
 
-// Start with cover screen active
-let currentDate = new Date("2026-01-01");
-let selectedDate = null;
+  let currentDate = new Date("2026-01-01");
+  let selectedDate = null; // cover mode at start
 
-// Initialize UI
-updateWholeUI();
+  // Initial render
+  updateWholeUI();
 
-/* ============================================================
-   COVER SCREEN BUTTONS
-============================================================ */
+  /* ============================================================
+     COVER SCREEN BUTTONS
+  ============================================================ */
 
-enterBtn.addEventListener("click", () => {
-    coverScreen.style.display = "none";
-});
-
-monthBtn.addEventListener("click", () => {
-    coverScreen.style.display = "none";
-});
-
-/* ============================================================
-   MAIN UI UPDATER
-============================================================ */
-
-function updateWholeUI() {
-    // Calendar always visible
-    updateCalendar();
-
-    // Cover mode → nothing selected
+  function hideCover() {
+    if (coverScreen) {
+      coverScreen.style.display = "none";
+    }
+    // Optionally pick a default date (e.g. Jan 1) when entering
     if (!selectedDate) {
+      selectedDate = new Date("2026-01-01");
+      updateWholeUI();
+    }
+  }
+
+  if (enterBtn) {
+    enterBtn.addEventListener("click", hideCover);
+  }
+
+  if (monthBtn) {
+    monthBtn.addEventListener("click", hideCover);
+  }
+
+  /* ============================================================
+     MAIN UI UPDATER
+  ============================================================ */
+
+  function updateWholeUI() {
+    updateCalendar(); // calendar always visible
+
+    if (!selectedDate) {
+      // cover mode – no specific day
+      if (backgroundDiv) {
         backgroundDiv.style.backgroundImage = "url('cover.jpg')";
+      }
+      if (currentDateDisplay) {
         currentDateDisplay.textContent = "Welcome to your 2026 Journal";
-        journalTitle.textContent = "Journal";
-        journalEntry.value = "";
-        tasksTitle.textContent = "Tasks";
-        taskList.innerHTML = "";
-        return;
+      }
+      if (journalTitle) journalTitle.textContent = "Journal";
+      if (journalEntry) journalEntry.value = "";
+      if (tasksTitle) tasksTitle.textContent = "Tasks";
+      if (taskList) taskList.innerHTML = "";
+      return;
     }
 
     updateHeaderDate();
     updateBackground();
     loadJournal();
     loadTasks();
-}
+  }
 
-/* ============================================================
-   HEADER DATE
-============================================================ */
+  /* ============================================================
+     HEADER DATE
+  ============================================================ */
 
-function updateHeaderDate() {
-    const options = { weekday: "long", month: "long", day: "numeric", year: "numeric" };
-    currentDateDisplay.textContent = selectedDate.toLocaleDateString("en-US", options);
-}
+  function updateHeaderDate() {
+    if (!currentDateDisplay || !selectedDate) return;
+    const options = {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    };
+    currentDateDisplay.textContent = selectedDate.toLocaleDateString(
+      "en-US",
+      options
+    );
+  }
 
-/* ============================================================
-   BACKGROUND SWITCHING
-============================================================ */
+  /* ============================================================
+     BACKGROUND SWITCH
+  ============================================================ */
 
-function updateBackground() {
+  function updateBackground() {
+    if (!backgroundDiv || !selectedDate) return;
     const month = selectedDate.getMonth();
-    backgroundDiv.style.backgroundImage = `url('${monthBackgrounds[month]}')`;
-}
+    const img = monthBackgrounds[month];
+    backgroundDiv.style.backgroundImage = `url('${img}')`;
+  }
 
-/* ============================================================
-   CALENDAR BUILDER
-============================================================ */
+  /* ============================================================
+     CALENDAR BUILDER
+  ============================================================ */
 
-function updateCalendar() {
+  function updateCalendar() {
+    if (!calendarGrid || !monthYearDisplay) return;
+
     calendarGrid.innerHTML = "";
 
     const year = 2026;
@@ -125,118 +152,127 @@ function updateCalendar() {
     const firstDay = new Date(year, month, 1).getDay();
     const numDays = new Date(year, month + 1, 0).getDate();
 
-    // Weekdays
     const weekdays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-    weekdays.forEach(d => {
-        const cell = document.createElement("div");
-        cell.textContent = d;
-        cell.classList.add("inactive");
-        calendarGrid.appendChild(cell);
+    weekdays.forEach((d) => {
+      const cell = document.createElement("div");
+      cell.textContent = d;
+      cell.classList.add("inactive");
+      calendarGrid.appendChild(cell);
     });
 
-    // Empty slots before first day
     for (let i = 0; i < firstDay; i++) {
-        const empty = document.createElement("div");
-        empty.classList.add("inactive");
-        calendarGrid.appendChild(empty);
+      const empty = document.createElement("div");
+      empty.classList.add("inactive");
+      calendarGrid.appendChild(empty);
     }
 
-    // Actual days
-    for (let d = 1; d <= numDays; d++) {
-        const cell = document.createElement("div");
-        cell.textContent = d;
+    for (let day = 1; day <= numDays; day++) {
+      const cell = document.createElement("div");
+      cell.textContent = day;
 
-        const thisDate = new Date(2026, month, d);
+      const thisDate = new Date(2026, month, day);
+      if (
+        selectedDate &&
+        selectedDate.getDate() === day &&
+        selectedDate.getMonth() === month
+      ) {
+        cell.classList.add("active");
+      }
 
-        if (
-            selectedDate &&
-            selectedDate.getDate() === d &&
-            selectedDate.getMonth() === month
-        ) {
-            cell.classList.add("active");
-        }
+      cell.addEventListener("click", () => {
+        selectedDate = thisDate;
+        updateWholeUI();
+      });
 
-        cell.addEventListener("click", () => {
-            selectedDate = thisDate;
-            updateWholeUI();
-        });
-
-        calendarGrid.appendChild(cell);
+      calendarGrid.appendChild(cell);
     }
-}
+  }
 
-/* ============================================================
-   MONTH SWITCHING
-============================================================ */
+  /* ============================================================
+     MONTH NAVIGATION
+  ============================================================ */
 
-prevMonthBtn.addEventListener("click", () => {
-    const m = currentDate.getMonth();
-    if (m > 0) currentDate.setMonth(m - 1);
-    updateWholeUI();
-});
+  if (prevMonthBtn) {
+    prevMonthBtn.addEventListener("click", () => {
+      const m = currentDate.getMonth();
+      if (m > 0) currentDate.setMonth(m - 1);
+      updateWholeUI();
+    });
+  }
 
-nextMonthBtn.addEventListener("click", () => {
-    const m = currentDate.getMonth();
-    if (m < 11) currentDate.setMonth(m + 1);
-    updateWholeUI();
-});
+  if (nextMonthBtn) {
+    nextMonthBtn.addEventListener("click", () => {
+      const m = currentDate.getMonth();
+      if (m < 11) currentDate.setMonth(m + 1);
+      updateWholeUI();
+    });
+  }
 
-/* ============================================================
-   JOURNAL STORAGE
-============================================================ */
+  /* ============================================================
+     JOURNAL STORAGE
+  ============================================================ */
 
-function getDateKey() {
-    return selectedDate.toISOString().split("T")[0];
-}
+  function getDateKey() {
+    return selectedDate ? selectedDate.toISOString().split("T")[0] : "";
+  }
 
-function loadJournal() {
+  function loadJournal() {
+    if (!journalEntry || !journalTitle || !selectedDate) return;
     const key = "journal_" + getDateKey();
     journalEntry.value = localStorage.getItem(key) || "";
     journalTitle.textContent = `Journal for ${selectedDate.toDateString()}`;
-}
+  }
 
-saveJournalBtn.addEventListener("click", () => {
-    localStorage.setItem("journal_" + getDateKey(), journalEntry.value);
-    alert("Journal saved!");
-});
+  if (saveJournalBtn) {
+    saveJournalBtn.addEventListener("click", () => {
+      if (!selectedDate || !journalEntry) return;
+      const key = "journal_" + getDateKey();
+      localStorage.setItem(key, journalEntry.value);
+      alert("Journal saved!");
+    });
+  }
 
-clearJournalBtn.addEventListener("click", () => {
-    journalEntry.value = "";
-});
+  if (clearJournalBtn) {
+    clearJournalBtn.addEventListener("click", () => {
+      if (!journalEntry) return;
+      journalEntry.value = "";
+    });
+  }
 
-/* ============================================================
-   TASKS STORAGE
-============================================================ */
+  /* ============================================================
+     TASKS STORAGE
+  ============================================================ */
 
-function loadTasks() {
+  function loadTasks() {
+    if (!taskList || !tasksTitle || !selectedDate) return;
+
     const key = "tasks_" + getDateKey();
     const saved = JSON.parse(localStorage.getItem(key) || "[]");
 
     taskList.innerHTML = "";
-    saved.forEach(task => renderTask(task));
+    saved.forEach((task) => renderTask(task));
 
     tasksTitle.textContent = `Tasks for ${selectedDate.toDateString()}`;
-}
+  }
 
-function saveTasks() {
+  function saveTasks() {
+    if (!taskList || !selectedDate) return;
     const key = "tasks_" + getDateKey();
     const tasks = [];
 
-    document.querySelectorAll("#taskList li").forEach(li => {
-        tasks.push({
-            text: li.querySelector(".t-text").textContent,
-            done: li.classList.contains("task-done")
-        });
+    taskList.querySelectorAll("li").forEach((li) => {
+      tasks.push({
+        text: li.querySelector(".t-text").textContent,
+        done: li.classList.contains("task-done"),
+      });
     });
 
     localStorage.setItem(key, JSON.stringify(tasks));
-}
+  }
 
-/* ============================================================
-   TASK RENDERING WITH CHECKBOX
-============================================================ */
+  function renderTask(task) {
+    if (!taskList) return;
 
-function renderTask(task) {
     const li = document.createElement("li");
     if (task.done) li.classList.add("task-done");
 
@@ -254,30 +290,29 @@ function renderTask(task) {
     del.classList.add("delete-btn");
 
     checkbox.addEventListener("change", () => {
-        li.classList.toggle("task-done");
-        saveTasks();
+      li.classList.toggle("task-done");
+      saveTasks();
     });
 
     del.addEventListener("click", (e) => {
-        e.stopPropagation();
-        li.remove();
-        saveTasks();
+      e.stopPropagation();
+      li.remove();
+      saveTasks();
     });
 
     li.appendChild(checkbox);
     li.appendChild(text);
     li.appendChild(del);
-
     taskList.appendChild(li);
-}
+  }
 
-/* ADD TASK */
-
-addTaskBtn.addEventListener("click", () => {
-    if (taskInput.value.trim() === "") return;
-
-    const newTask = { text: taskInput.value, done: false };
-    renderTask(newTask);
-    saveTasks();
-    taskInput.value = "";
+  if (addTaskBtn) {
+    addTaskBtn.addEventListener("click", () => {
+      if (!taskInput || taskInput.value.trim() === "" || !selectedDate) return;
+      const newTask = { text: taskInput.value, done: false };
+      renderTask(newTask);
+      saveTasks();
+      taskInput.value = "";
+    });
+  }
 });
