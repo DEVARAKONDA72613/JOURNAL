@@ -1,16 +1,18 @@
+/* ========== RESET ========== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Segoe UI", sans-serif;
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
+  color: #ffffff;
+  background: #000;
   overflow-x: hidden;
-  color: white;
 }
 
-/* ================= BACKGROUND ================= */
+/* ========== BACKGROUND ========== */
 #background {
   position: fixed;
   inset: 0;
@@ -18,17 +20,18 @@ body {
   background-position: center 20%;
   background-repeat: no-repeat;
   z-index: -3;
+  transition: background-image 0.4s ease-out;
 }
 
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(5px);
+  background: radial-gradient(circle at top, rgba(0,0,0,0.3), rgba(0,0,0,0.8));
+  backdrop-filter: blur(6px);
   z-index: -2;
 }
 
-/* ================= COVER PAGE ================= */
+/* ========== COVER PAGE ========== */
 #coverScreen {
   position: fixed;
   inset: 0;
@@ -39,177 +42,274 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  animation: coverFadeIn 0.7s ease-out;
 }
 
 .cover-center {
   text-align: center;
-  backdrop-filter: blur(6px);
-  padding: 40px 60px;
-  border-radius: 25px;
+  backdrop-filter: blur(8px);
+  padding: 40px 70px;
+  border-radius: 28px;
+  background: radial-gradient(circle at top, rgba(0,0,0,0.35), rgba(0,0,0,0.7));
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7);
 }
 
 .cover-title {
-  font-size: 58px;
+  font-size: 56px;
   font-weight: 300;
-  margin-bottom: 18px;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
 }
 
 .cover-subtitle {
   font-size: 22px;
   opacity: 0.9;
-  margin-bottom: 35px;
+  margin-bottom: 30px;
 }
 
 .cover-btn {
-  padding: 14px 28px;
+  padding: 14px 32px;
   font-size: 18px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.25);
-  color: white;
+  border-radius: 999px;
   border: none;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
   cursor: pointer;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.6);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .cover-btn:hover {
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(255,255,255,0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.75);
 }
 
-/* ================= HEADER ================= */
+/* Fade-out when we add .hide */
+#coverScreen.hide {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+/* ========== HEADER ========== */
 header {
   text-align: center;
-  padding: 20px 0;
+  padding: 24px 0 12px;
 }
 
-/* ================= GRID LAYOUT ================= */
+header h1 {
+  font-size: 32px;
+  font-weight: 500;
+}
+
+header p {
+  margin-top: 4px;
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+/* ========== MAIN LAYOUT ========== */
 main {
   width: 95%;
   max-width: 1400px;
-  margin: 20px auto;
+  margin: 10px auto 40px;
   display: grid;
-  grid-template-columns: 330px 1fr;
-  gap: 25px;
+  grid-template-columns: 330px minmax(0, 1fr);
+  gap: 24px;
 }
 
 .tasks-card {
   grid-column: span 2;
 }
 
-/* ================= GLASS CARD ================= */
+/* ========== GLASS CARDS ========== */
 .glass {
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(12px);
-  border-radius: 20px;
-  padding: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  background: rgba(15, 15, 15, 0.55);
+  border-radius: 26px;
+  padding: 20px 24px;
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+  backdrop-filter: blur(22px);
 }
 
-/* ================= CALENDAR ================= */
+/* subtle entrance animation */
+.card-animate {
+  animation: cardIn 0.6s ease-out;
+}
+
+/* ========== CALENDAR ========== */
 .calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.calendar-header button {
-  width: 32px;
-  height: 32px;
+#monthYear {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.nav-btn {
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   border: none;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255,255,255,0.16);
+  color: #fff;
   cursor: pointer;
-  color: white;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.5);
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.nav-btn:hover {
+  background: rgba(255,255,255,0.3);
+  transform: translateY(-1px);
 }
 
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 8px;
-  margin-top: 15px;
+  margin-top: 18px;
 }
 
 .calendar-grid div {
   padding: 10px 0;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  border-radius: 14px;
   text-align: center;
+  background: rgba(255,255,255,0.05);
   cursor: pointer;
+  font-size: 14px;
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  backdrop-filter: blur(10px);
+}
+
+.calendar-grid div:hover {
+  background: rgba(255,255,255,0.16);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.4);
 }
 
 .calendar-grid .inactive {
-  opacity: 0.4;
+  opacity: 0.45;
+  cursor: default;
 }
 
+.calendar-grid .inactive:hover {
+  background: rgba(255,255,255,0.05);
+  transform: none;
+  box-shadow: none;
+}
+
+/* Selected day – premium toggle look */
 .calendar-grid .active {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255,255,255,0.22);
+  border: 1px solid rgba(255,255,255,0.5);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+  font-weight: 600;
+  transform: translateY(-1px) scale(1.04);
 }
 
-/* ================= JOURNAL ================= */
+/* ========== JOURNAL ========== */
+.journal-card h2,
+.tasks-card h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
 #journalEntry {
   width: 100%;
-  height: 220px;
-  margin-top: 10px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.15);
+  height: 230px;
+  border-radius: 16px;
   border: none;
-  padding: 15px;
-  color: white;
+  margin-top: 6px;
+  padding: 14px;
+  font-size: 15px;
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  resize: vertical;
+}
+
+#journalEntry::placeholder {
+  color: rgba(255,255,255,0.65);
 }
 
 .btn-row {
-  margin-top: 10px;
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
 }
 
-.save-btn,
-.clear-btn {
-  padding: 10px 20px;
+/* pill buttons */
+.pill-btn {
+  padding: 9px 18px;
+  border-radius: 999px;
   border: none;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255,255,255,0.14);
+  color: #fff;
   cursor: pointer;
+  font-size: 14px;
+  transition: background 0.18s ease, transform 0.12s ease;
 }
 
-.save-btn:hover,
-.clear-btn:hover {
-  background: rgba(255, 255, 255, 0.5);
+.pill-btn.primary {
+  background: rgba(255,255,255,0.25);
 }
 
-/* ================= TASKS ================= */
+.pill-btn:hover {
+  background: rgba(255,255,255,0.35);
+  transform: translateY(-1px);
+}
+
+/* ========== TASKS ========== */
 .task-input {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .task-input input {
   flex: 1;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
+  border-radius: 999px;
   border: none;
-  padding: 12px;
-  color: white;
+  padding: 11px 14px;
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+}
+
+.task-input input::placeholder {
+  color: rgba(255,255,255,0.6);
 }
 
 #taskList {
   list-style: none;
-  margin-top: 12px;
+  margin-top: 14px;
 }
 
 #taskList li {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 12px;
-  border-radius: 12px;
-  margin-top: 10px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 14px;
 }
 
 .task-checkbox {
-  width: 20px;
-  height: 20px;
-  margin-right: 12px;
-  accent-color: white;
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  accent-color: #ffffff;
+}
+
+.t-text {
+  flex: 1;
+  font-size: 14px;
 }
 
 .task-done .t-text {
@@ -218,18 +318,30 @@ main {
 }
 
 .delete-btn {
-  background: rgba(255, 0, 0, 0.4);
-  padding: 5px 10px;
-  border-radius: 10px;
+  background: rgba(255, 75, 75, 0.4);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 13px;
+  cursor: pointer;
 }
 
-/* ================= RESPONSIVE ================= */
+/* ========== RESPONSIVE ========== */
 @media (max-width: 900px) {
   main {
     grid-template-columns: 1fr;
   }
-
   .tasks-card {
     grid-column: span 1;
   }
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes coverFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
