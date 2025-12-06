@@ -1,69 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 Journal</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2026 Journal</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-<!-- COVER PAGE -->
-<div id="coverScreen">
+  <!-- COVER PAGE -->
+  <div id="coverScreen">
     <div class="cover-content">
+      <div class="diary-badge">📘 2026 Diary</div>
 
-        <div class="diary-badge">📘 2026 Diary</div>
+      <h1 class="cover-title">My 2026 Journal & Daily Tasks</h1>
+      <p class="cover-subtitle">Capture your 2026, one day at a time.</p>
 
-        <h1 class="cover-title">My 2026 Journal & Daily Tasks</h1>
-        <p class="cover-subtitle">Capture your 2026, one day at a time.</p>
-
-        <button id="enterBtn" class="enter-btn">Enter 2026 Journal</button>
-        <button id="monthBtn" class="select-month-btn">Select Month</button>
-
+      <button id="enterBtn" class="enter-btn">Enter 2026 Journal</button>
+      <button id="monthBtn" class="select-month-btn">Select Month</button>
     </div>
-</div>
+  </div>
 
-<!-- BACKGROUND -->
-<div id="background"></div>
-<div class="overlay"></div>
+  <!-- BACKGROUND + OVERLAY -->
+  <div id="background"></div>
+  <div class="overlay"></div>
 
-<header>
+  <!-- HEADER -->
+  <header>
     <h1>2026 Journal</h1>
     <p id="currentDate"></p>
-</header>
+  </header>
 
-<main>
+  <!-- MAIN LAYOUT -->
+  <main>
     <!-- CALENDAR -->
     <section class="calendar-card glass">
-        <div class="calendar-header">
-            <button id="prevMonth">&#8249;</button>
-            <h2 id="monthYear">Select a Month</h2>
-            <button id="nextMonth">&#8250;</button>
-        </div>
-        <div class="calendar-grid" id="calendarGrid"></div>
+      <div class="calendar-header">
+        <button id="prevMonth">&#8249;</button>
+        <h2 id="monthYear">Select a Month</h2>
+        <button id="nextMonth">&#8250;</button>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
     </section>
 
     <!-- JOURNAL -->
     <section class="journal-card glass">
-        <h2 id="journalTitle">Journal</h2>
-        <textarea id="journalEntry" placeholder="Write your thoughts, experiences, reflections..."></textarea>
-        <div class="btn-row">
-            <button id="saveJournal" class="save-btn">Save</button>
-            <button id="clearJournal" class="clear-btn">Clear</button>
-        </div>
+      <h2 id="journalTitle">Journal</h2>
+      <textarea
+        id="journalEntry"
+        placeholder="Write your thoughts, experiences, and reflections for today..."
+      ></textarea>
+      <div class="btn-row">
+        <button id="saveJournal" class="save-btn">Save</button>
+        <button id="clearJournal" class="clear-btn">Clear</button>
+      </div>
     </section>
 
     <!-- TASKS -->
     <section class="tasks-card glass">
-        <h2 id="tasksTitle">Tasks</h2>
-        <div class="task-input">
-            <input type="text" id="taskInput" placeholder="Add a new task...">
-            <button id="addTask">Add</button>
-        </div>
-        <ul id="taskList"></ul>
+      <h2 id="tasksTitle">Tasks</h2>
+      <div class="task-input">
+        <input
+          type="text"
+          id="taskInput"
+          placeholder="Add a new task..."
+        />
+        <button id="addTask">Add</button>
+      </div>
+      <ul id="taskList"></ul>
     </section>
-</main>
+  </main>
 
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
