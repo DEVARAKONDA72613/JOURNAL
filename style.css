@@ -16,29 +16,18 @@ body {
 
 #background {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: #000;
+    
+    background-size: contain;      /* Ensures full image is visible */
+    background-repeat: no-repeat;  /* No repeating tiles */
+    background-position: center;   /* Centers face/body */
+    
+    background-color: #000;        /* Fills empty space on sides */
     z-index: -3;
 }
-
-/* Landscape screen → fill width */
-@media (min-aspect-ratio: 16/9) {
-    #background {
-        background-size: contain;
-    }
-}
-
-/* Portrait screen → fill height */
-@media (max-aspect-ratio: 16/9) {
-    #background {
-        background-size: contain;
-    }
-}
-
 
 /* ---------------- HEADER ---------------- */
 
