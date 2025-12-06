@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  /* =============== MONTH BACKGROUNDS =============== */
-
   const monthBackgrounds = {
     0: "jan.jpg",
     1: "feb.jpg",
@@ -10,13 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
     5: "june.jpg",
     6: "july.jpg",
     7: "aug.jpg",
-    8: "sept.jpg", // make sure files are exactly: sept.jpg, oct.jpg, nov.jpg
+    8: "sept.jpg",
     9: "oct.jpg",
     10: "nov.jpg",
     11: "dec.jpg",
   };
-
-  /* =============== DOM ELEMENTS =============== */
 
   const backgroundDiv = document.getElementById("background");
   const currentDateDisplay = document.getElementById("currentDate");
@@ -38,98 +34,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const coverScreen = document.getElementById("coverScreen");
   const enterBtn = document.getElementById("enterBtn");
-  const monthBtn = document.getElementById("monthBtn");
-
-  /* =============== DATE STATE =============== */
 
   let currentDate = new Date("2026-01-01");
-  let selectedDate = null; // cover mode
-
-  updateWholeUI();
-
-  /* =============== COVER BUTTONS =============== */
+  let selectedDate = null;
 
   function hideCover() {
-    if (coverScreen) coverScreen.style.display = "none";
-    if (!selectedDate) {
-      selectedDate = new Date("2026-01-01");
-      updateWholeUI();
-    }
+    coverScreen.style.display = "none";
+    selectedDate = new Date("2026-01-01");
+    updateAll();
   }
 
-  if (enterBtn) enterBtn.addEventListener("click", hideCover);
-  if (monthBtn) monthBtn.addEventListener("click", hideCover);
+  enterBtn.addEventListener("click", hideCover);
 
-  /* =============== MAIN UI UPDATE =============== */
-
-  function updateWholeUI() {
+  function updateAll() {
     updateCalendar();
-
-    if (!selectedDate) {
-      if (backgroundDiv)
-        backgroundDiv.style.backgroundImage = "url('cover.jpg')";
-      if (currentDateDisplay)
-        currentDateDisplay.textContent = "Welcome to your 2026 Journal";
-      if (journalTitle) journalTitle.textContent = "Journal";
-      if (journalEntry) journalEntry.value = "";
-      if (tasksTitle) tasksTitle.textContent = "Tasks";
-      if (taskList) taskList.innerHTML = "";
-      return;
-    }
-
-    updateHeaderDate();
+    if (!selectedDate) return;
+    updateHeader();
     updateBackground();
     loadJournal();
     loadTasks();
   }
 
-  /* =============== HEADER DATE =============== */
-
-  function updateHeaderDate() {
-    if (!currentDateDisplay || !selectedDate) return;
-    const options = {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    };
-    currentDateDisplay.textContent = selectedDate.toLocaleDateString(
-      "en-US",
-      options
-    );
+  function updateHeader() {
+    const opts = { weekday: "long", month: "long", day: "numeric", year: "numeric" };
+    currentDateDisplay.textContent = selectedDate.toLocaleDateString("en-US", opts);
   }
-
-  /* =============== BACKGROUND =============== */
 
   function updateBackground() {
-    if (!backgroundDiv || !selectedDate) return;
     const month = selectedDate.getMonth();
-    const img = monthBackgrounds[month];
-    backgroundDiv.style.backgroundImage = `url('${img}')`;
+    backgroundDiv.style.backgroundImage = `url('${monthBackgrounds[month]}')`;
   }
 
-  /* =============== CALENDAR =============== */
-
   function updateCalendar() {
-    if (!calendarGrid || !monthYearDisplay) return;
-
     calendarGrid.innerHTML = "";
-
+    const m = currentDate.getMonth();
     const year = 2026;
-    const month = currentDate.getMonth();
-    const monthName = currentDate.toLocaleString("default", { month: "long" });
 
-    monthYearDisplay.textContent = `${monthName} 2026`;
+    monthYearDisplay.textContent = currentDate.toLocaleString("default", { month: "long" }) + " 2026";
 
-    const firstDay = new Date(year, month, 1).getDay();
-    const numDays = new Date(year, month + 1, 0).getDate();
+    const firstDay = new Date(year, m, 1).getDay();
+    const totalDays = new Date(year, m + 1, 0).getDate();
 
-    const weekdays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-    weekdays.forEach((d) => {
-      const cell = document.createElement("div");
-      cell.textContent = d;
-      cell.classList.add("inactive");
-      calendarGrid.appendChild(cell);
+    const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    days.forEach(d => {
+      const el = document.createElement("div");
+      el.textContent = d;
+      el.classList.add("inactive");
+      calendarGrid.appendChild(el);
     });
 
     for (let i = 0; i < firstDay; i++) {
@@ -138,106 +89,82 @@ document.addEventListener("DOMContentLoaded", () => {
       calendarGrid.appendChild(empty);
     }
 
-    for (let day = 1; day <= numDays; day++) {
-      const cell = document.createElement("div");
-      cell.textContent = day;
+    for (let d = 1; d <= totalDays; d++) {
+      const el = document.createElement("div");
+      el.textContent = d;
 
-      const thisDate = new Date(2026, month, day);
-      if (
-        selectedDate &&
-        selectedDate.getDate() === day &&
-        selectedDate.getMonth() === month
-      ) {
-        cell.classList.add("active");
+      const thisDate = new Date(2026, m, d);
+
+      if (selectedDate &&
+          selectedDate.getDate() === d &&
+          selectedDate.getMonth() === m) {
+        el.classList.add("active");
       }
 
-      cell.addEventListener("click", () => {
+      el.addEventListener("click", () => {
         selectedDate = thisDate;
-        updateWholeUI();
+        updateAll();
       });
 
-      calendarGrid.appendChild(cell);
+      calendarGrid.appendChild(el);
     }
   }
 
-  if (prevMonthBtn) {
-    prevMonthBtn.addEventListener("click", () => {
-      const m = currentDate.getMonth();
-      if (m > 0) currentDate.setMonth(m - 1);
-      updateWholeUI();
-    });
-  }
+  prevMonthBtn.addEventListener("click", () => {
+    if (currentDate.getMonth() > 0) {
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      updateAll();
+    }
+  });
 
-  if (nextMonthBtn) {
-    nextMonthBtn.addEventListener("click", () => {
-      const m = currentDate.getMonth();
-      if (m < 11) currentDate.setMonth(m + 1);
-      updateWholeUI();
-    });
-  }
+  nextMonthBtn.addEventListener("click", () => {
+    if (currentDate.getMonth() < 11) {
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      updateAll();
+    }
+  });
 
-  /* =============== JOURNAL =============== */
-
-  function getDateKey() {
-    return selectedDate ? selectedDate.toISOString().split("T")[0] : "";
+  function dateKey() {
+    return selectedDate.toISOString().split("T")[0];
   }
 
   function loadJournal() {
-    if (!journalEntry || !journalTitle || !selectedDate) return;
-    const key = "journal_" + getDateKey();
+    const key = "journal_" + dateKey();
     journalEntry.value = localStorage.getItem(key) || "";
     journalTitle.textContent = `Journal for ${selectedDate.toDateString()}`;
   }
 
-  if (saveJournalBtn) {
-    saveJournalBtn.addEventListener("click", () => {
-      if (!selectedDate || !journalEntry) return;
-      const key = "journal_" + getDateKey();
-      localStorage.setItem(key, journalEntry.value);
-      alert("Journal saved!");
-    });
-  }
+  saveJournalBtn.addEventListener("click", () => {
+    localStorage.setItem("journal_" + dateKey(), journalEntry.value);
+    alert("Saved!");
+  });
 
-  if (clearJournalBtn) {
-    clearJournalBtn.addEventListener("click", () => {
-      if (!journalEntry) return;
-      journalEntry.value = "";
-    });
-  }
-
-  /* =============== TASKS =============== */
+  clearJournalBtn.addEventListener("click", () => {
+    journalEntry.value = "";
+  });
 
   function loadTasks() {
-    if (!taskList || !tasksTitle || !selectedDate) return;
-
-    const key = "tasks_" + getDateKey();
-    const saved = JSON.parse(localStorage.getItem(key) || "[]");
-
+    const key = "tasks_" + dateKey();
+    const tasks = JSON.parse(localStorage.getItem(key) || "[]");
     taskList.innerHTML = "";
-    saved.forEach((task) => renderTask(task));
-
+    tasks.forEach(renderTask);
     tasksTitle.textContent = `Tasks for ${selectedDate.toDateString()}`;
   }
 
   function saveTasks() {
-    if (!taskList || !selectedDate) return;
-    const key = "tasks_" + getDateKey();
-    const tasks = [];
-
-    taskList.querySelectorAll("li").forEach((li) => {
-      tasks.push({
+    const items = [];
+    document.querySelectorAll("#taskList li").forEach(li => {
+      items.push({
         text: li.querySelector(".t-text").textContent,
         done: li.classList.contains("task-done"),
       });
     });
-
-    localStorage.setItem(key, JSON.stringify(tasks));
+    localStorage.setItem("tasks_" + dateKey(), JSON.stringify(items));
   }
 
   function renderTask(task) {
-    if (!taskList) return;
-
     const li = document.createElement("li");
+
     if (task.done) li.classList.add("task-done");
 
     const checkbox = document.createElement("input");
@@ -258,8 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
       saveTasks();
     });
 
-    del.addEventListener("click", (e) => {
-      e.stopPropagation();
+    del.addEventListener("click", () => {
       li.remove();
       saveTasks();
     });
@@ -270,13 +196,11 @@ document.addEventListener("DOMContentLoaded", () => {
     taskList.appendChild(li);
   }
 
-  if (addTaskBtn) {
-    addTaskBtn.addEventListener("click", () => {
-      if (!taskInput || taskInput.value.trim() === "" || !selectedDate) return;
-      const newTask = { text: taskInput.value, done: false };
-      renderTask(newTask);
-      saveTasks();
-      taskInput.value = "";
-    });
-  }
+  addTaskBtn.addEventListener("click", () => {
+    if (taskInput.value.trim() === "") return;
+    const newT = { text: taskInput.value, done: false };
+    renderTask(newT);
+    saveTasks();
+    taskInput.value = "";
+  });
 });
