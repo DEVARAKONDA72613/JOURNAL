@@ -6,9 +6,6 @@
   <title>2026 Journal</title>
 
   <link rel="stylesheet" href="style.css" />
-
-  <!-- Supabase (UMD, global `supabase`) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
 </head>
 
 <body>
@@ -17,24 +14,19 @@
     <div class="cover-center">
       <h1 class="cover-title">My 2026 Journal & Daily Tasks</h1>
       <p class="cover-subtitle">Capture your 2026, one day at a time.</p>
-      <!-- Text of this button is changed in JS depending on login state -->
       <button id="enterBtn" class="cover-btn">Loading…</button>
     </div>
   </div>
 
-  <!-- BACKGROUND + OVERLAY (your CSS should style these) -->
   <div id="background"></div>
   <div class="overlay"></div>
 
-  <!-- HEADER -->
   <header>
     <h1>2026 Journal</h1>
     <p id="currentDate"></p>
   </header>
 
-  <!-- MAIN CONTENT -->
   <main>
-    <!-- Calendar card -->
     <section class="calendar-card glass card-animate" id="calendarCard">
       <div class="calendar-header">
         <button id="prevMonth" class="nav-btn">&#8249;</button>
@@ -44,7 +36,6 @@
       <div class="calendar-grid" id="calendarGrid"></div>
     </section>
 
-    <!-- Journal card -->
     <section class="journal-card glass card-animate" id="journalCard">
       <h2 id="journalTitle">Journal</h2>
       <textarea
@@ -57,22 +48,18 @@
       </div>
     </section>
 
-    <!-- Tasks card -->
     <section class="tasks-card glass card-animate" id="tasksCard">
       <h2 id="tasksTitle">Tasks</h2>
       <div class="task-input">
-        <input
-          type="text"
-          id="taskInput"
-          placeholder="Add a new task..."
-        />
+        <input type="text" id="taskInput" placeholder="Add a new task..." />
         <button id="addTask" class="pill-btn primary">Add</button>
       </div>
       <ul id="taskList"></ul>
     </section>
   </main>
 
-  <!-- APP LOGIC -->
-  <script src="script.js"></script>
+  <!-- Firebase + App -->
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
