@@ -27,28 +27,25 @@
   </header>
 
   <main>
-    <section class="calendar-card glass card-animate" id="calendarCard">
+    <section class="calendar-card glass card-animate">
       <div class="calendar-header">
         <button id="prevMonth" class="nav-btn">&#8249;</button>
-        <h2 id="monthYear">Select a Month</h2>
+        <h2 id="monthYear"></h2>
         <button id="nextMonth" class="nav-btn">&#8250;</button>
       </div>
       <div class="calendar-grid" id="calendarGrid"></div>
     </section>
 
-    <section class="journal-card glass card-animate" id="journalCard">
+    <section class="journal-card glass card-animate">
       <h2 id="journalTitle">Journal</h2>
-      <textarea
-        id="journalEntry"
-        placeholder="Write your thoughts, experiences, and reflections for today..."
-      ></textarea>
+      <textarea id="journalEntry"></textarea>
       <div class="btn-row">
         <button id="saveJournal" class="pill-btn primary">Save</button>
         <button id="clearJournal" class="pill-btn">Clear</button>
       </div>
     </section>
 
-    <section class="tasks-card glass card-animate" id="tasksCard">
+    <section class="tasks-card glass card-animate">
       <h2 id="tasksTitle">Tasks</h2>
       <div class="task-input">
         <input type="text" id="taskInput" placeholder="Add a new task..." />
@@ -58,7 +55,7 @@
     </section>
   </main>
 
-  <!-- Firebase + App -->
+  <!-- Modules -->
   <script type="module" src="firebase.js"></script>
   <script type="module" src="script.js"></script>
 </body>
