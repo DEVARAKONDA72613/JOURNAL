@@ -3,7 +3,7 @@
 // ================================
 import { auth, provider } from "./firebase.js";
 import {
-  signInWithRedirect,
+  signInWithPopup,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
@@ -57,14 +57,21 @@ const monthImages = {
 const dateKey = (d) => d.toISOString().split("T")[0];
 
 // ================================
-// AUTH (FINAL & STABLE)
+// AUTH (FIXED – NO REDIRECT LOOP)
 // ================================
 enterBtn.textContent = "Checking login…";
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     enterBtn.textContent = "Sign in with Google";
-    enterBtn.onclick = () => signInWithRedirect(auth, provider);
+    enterBtn.onclick = async () => {
+      try {
+        await signInWithPopup(auth, provider);
+      } catch (e) {
+        console.error("Login failed:", e);
+        alert("Login failed. Please try again.");
+      }
+    };
     return;
   }
 
