@@ -1,14 +1,16 @@
 import { auth, provider } from "./firebase.js";
 import {
-  signInWithPopup,
-  onAuthStateChanged,
+  signInWithRedirect,
+  getRedirectResult,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
+// Supabase (DB only)
 const supa = createClient(
   "https://klrjkwouixiybuyjglbj.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtscmprd291aXhpeWJ1eWpnbGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMzE5MjAsImV4cCI6MjA4MDYwNzkyMH0.-sdXiwRf0mbA-3WYnddrQPQ2rwMNbOGP0oNziiIZBUE"
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3Mi6Iktscmprd291aXhpeWJ1eWpnbGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMzE5MjAsImV4cCI6MjA4MDYwNzkyMH0.-sdXiwRf0mbA-3WYnddrQPQ2rwMNbOGP0oNziiIZBUE"
 );
 
 // DOM
@@ -31,50 +33,34 @@ const nextMonthBtn = document.getElementById("nextMonth");
 
 // State
 let currentUser = null;
-let selectedDate = null;
+let selectedDate = new Date(2026, 0, 1);
 let currentMonth = new Date(2026, 0, 1);
 
 const monthImages = {
-  0: "jan.jpg",
-  1: "feb.jpg",
-  2: "march.jpg",
-  3: "aprl.jpg",
-  4: "mat.jpg",
-  5: "june.jpg",
-  6: "july.jpg",
-  7: "aug.jpg",
-  8: "sept.jpg",
-  9: "oct.jpg",
-  10: "nov.jpg",
-  11: "dec.jpg",
+  0: "jan.jpg", 1: "feb.jpg", 2: "march.jpg", 3: "aprl.jpg",
+  4: "mat.jpg", 5: "june.jpg", 6: "july.jpg", 7: "aug.jpg",
+  8: "sept.jpg", 9: "oct.jpg", 10: "nov.jpg", 11: "dec.jpg"
 };
 
 const dateKey = (d) => d.toISOString().split("T")[0];
 
-function updateHeader() {
-  if (selectedDate) currentDateDisplay.textContent = selectedDate.toDateString();
-}
+// 🔁 HANDLE REDIRECT RESULT
+getRedirectResult(auth).catch(console.error);
 
-function updateBackground() {
-  if (!selectedDate) return;
-  const img = monthImages[selectedDate.getMonth()];
-  backgroundDiv.style.backgroundImage = `url('${img}')`;
-}
-
-// 🔐 AUTH
+// 🔐 AUTH STATE
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     enterBtn.textContent = "Sign in with Google";
-    enterBtn.onclick = async () => await signInWithPopup(auth, provider);
+    enterBtn.onclick = async () => {
+      await signInWithRedirect(auth, provider);
+    };
     return;
   }
 
   currentUser = { id: user.uid, email: user.email };
+
   enterBtn.textContent = "Enter 2026 Journal";
   enterBtn.onclick = () => coverScreen.classList.add("hide");
-
-  selectedDate = new Date(2026, 0, 1);
-  currentMonth = new Date(2026, 0, 1);
 
   renderCalendar();
   updateHeader();
@@ -83,36 +69,35 @@ onAuthStateChanged(auth, async (user) => {
   await loadTasks();
 });
 
+// UI helpers
+function updateHeader() {
+  currentDateDisplay.textContent = selectedDate.toDateString();
+}
+
+function updateBackground() {
+  const img = monthImages[selectedDate.getMonth()];
+  backgroundDiv.style.backgroundImage = `url('${img}')`;
+}
+
 // Calendar
 function renderCalendar() {
   const year = 2026;
   const month = currentMonth.getMonth();
-  monthYearDisplay.textContent = `${currentMonth.toLocaleString("en-US", {
-    month: "long",
-  })} 2026`;
+  monthYearDisplay.textContent =
+    `${currentMonth.toLocaleString("en-US", { month: "long" })} 2026`;
 
   calendarGrid.innerHTML = "";
-
-  ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].forEach((d) => {
-    const el = document.createElement("div");
-    el.textContent = d;
-    el.classList.add("inactive");
-    calendarGrid.appendChild(el);
-  });
-
   const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const days = new Date(year, month + 1, 0).getDate();
 
-  for (let i = 0; i < firstDay; i++) {
-    calendarGrid.appendChild(document.createElement("div"));
-  }
+  for (let i = 0; i < firstDay; i++) calendarGrid.appendChild(document.createElement("div"));
 
-  for (let d = 1; d <= daysInMonth; d++) {
+  for (let d = 1; d <= days; d++) {
     const cell = document.createElement("div");
     cell.textContent = d;
-    const date = new Date(year, month, d);
 
-    if (selectedDate?.toDateString() === date.toDateString()) {
+    const date = new Date(year, month, d);
+    if (date.toDateString() === selectedDate.toDateString()) {
       cell.classList.add("active");
     }
 
@@ -160,12 +145,12 @@ saveJournalBtn.onclick = async () => {
   await supa.from("journal_entries").upsert({
     user_id: currentUser.id,
     entry_date: dateKey(selectedDate),
-    content: journalEntry.value,
+    content: journalEntry.value
   });
   alert("Journal saved ✅");
 };
 
-clearJournalBtn.onclick = () => (journalEntry.value = "");
+clearJournalBtn.onclick = () => journalEntry.value = "";
 
 // Tasks
 async function loadTasks() {
@@ -182,14 +167,12 @@ async function loadTasks() {
 
 function renderTask(task) {
   const li = document.createElement("li");
-  if (task.done) li.classList.add("task-done");
 
   const cb = document.createElement("input");
   cb.type = "checkbox";
   cb.checked = task.done;
   cb.onchange = async () => {
     await supa.from("tasks").update({ done: cb.checked }).eq("id", task.id);
-    li.classList.toggle("task-done", cb.checked);
   };
 
   const span = document.createElement("span");
@@ -208,13 +191,14 @@ function renderTask(task) {
 
 addTaskBtn.onclick = async () => {
   if (!taskInput.value.trim()) return;
+
   const { data } = await supa
     .from("tasks")
     .insert({
       user_id: currentUser.id,
       task_date: dateKey(selectedDate),
       text: taskInput.value,
-      done: false,
+      done: false
     })
     .select()
     .single();
