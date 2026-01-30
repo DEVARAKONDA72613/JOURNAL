@@ -1,5 +1,4 @@
 // firebase.js
-// This file must be in the ROOT (same level as index.html)
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
@@ -7,7 +6,7 @@ import {
   GoogleAuthProvider
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// 🔐 Your Firebase project config
+// 🔐 Firebase config (public, safe)
 const firebaseConfig = {
   apiKey: "AIzaSyComvWDZgMUF2_7DaWbppBbPc6AbBNPf3Q",
   authDomain: "journal-d98dd.firebaseapp.com",
@@ -18,6 +17,6 @@ const firebaseConfig = {
 // 🚀 Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// 🔑 Auth + Provider
+// 🔑 Auth + Google provider
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
