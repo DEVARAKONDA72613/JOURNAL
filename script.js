@@ -4,7 +4,6 @@
 import { auth, provider } from "./firebase.js";
 import {
   signInWithRedirect,
-  getRedirectResult,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
@@ -48,7 +47,6 @@ const nextMonthBtn = document.getElementById("nextMonth");
 let currentUser = null;
 let selectedDate = new Date(2026, 0, 1);
 let currentMonth = new Date(2026, 0, 1);
-let authReady = false;
 
 const monthImages = {
   0: "jan.jpg", 1: "feb.jpg", 2: "march.jpg", 3: "aprl.jpg",
@@ -59,24 +57,11 @@ const monthImages = {
 const dateKey = (d) => d.toISOString().split("T")[0];
 
 // ================================
-// AUTH – SAFE & CLEAN
+// AUTH (FINAL & STABLE)
 // ================================
 enterBtn.textContent = "Checking login…";
 
-// Handle redirect result FIRST
-(async () => {
-  try {
-    await getRedirectResult(auth);
-  } catch (e) {
-    console.warn("Redirect result error (safe):", e);
-  } finally {
-    authReady = true;
-  }
-})();
-
 onAuthStateChanged(auth, async (user) => {
-  if (!authReady) return;
-
   if (!user) {
     enterBtn.textContent = "Sign in with Google";
     enterBtn.onclick = () => signInWithRedirect(auth, provider);
